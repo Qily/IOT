@@ -1,0 +1,23 @@
+<?php
+ return array (
+  'id' => '4',
+  'info1' => '',
+  'info2' => '',
+  'info3' => '',
+  'info4' => '',
+  'info5' => '',
+  'info6' => '',
+  'info7' => '',
+  'info8' => '',
+  'info9' => '',
+  'info10' => '<p>Tel:+86-000000</p><div>E-mail:sales@metinfo.cn</div>',
+  'imgurl1' => '',
+  'imgurl2' => '',
+  'rightmd5' => '',
+  'righttext' => '',
+  'authcode' => '',
+  'authpass' => '',
+  'authtext' => '',
+  'data' => '',
+  'lang' => 'en',
+); ?>
