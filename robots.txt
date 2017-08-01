@@ -14,4 +14,4 @@ Disallow: /job/templates/
 Disallow: /member/
 Disallow: /sitemap/templates/
 Disallow: /wap/templates/
-Sitemap: http://ttggcc.get.vip/sitemap.xml
+Sitemap: http://localhost/iot/sitemap.xml

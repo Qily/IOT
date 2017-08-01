@@ -27,7 +27,8 @@ $bootstrap_min_js = $_M[url][own]."web/templates/css/bootstrap.min.js";
 $jquery_min_js = $_M[url][own]."web/templates/css/jquery.min.js";
 $scripts_js = $_M[url][own]."web/templates/css/scripts.js";
 
-$urlUserdata = $_M['url'][site]."data/request_page.php?n=userdata&c=userdata&";
+$urlSite = "http://localhost/iot/";
+$urlUserdata = $urlSite."data/request_page.php?n=userdata&c=userdata&";
 
 echo <<<EOT
 -->
@@ -65,19 +66,13 @@ echo <<<EOT
 			<div class="col-md-1"></div>
 			<div class="col-md-2">
 				<ul class="nav nav-stacked">
-					<li><a href="{$_M[url][site]}"><img src="{$imghome}"/>&nbsp&nbsp返回首页</a></li>
-					
-					<li><a href="{$urlUserdata}a=doindex"><img src="{$imgdevice}"/>&nbsp&nbsp设备列表</a></li>
-
-                    <li><a href="{$urlUserdata}a=dogroupopera"><img src="{$imgGroup}"/>&nbsp&nbsp设备组操作</a></li>
-
-					
+					<li><a href="http://localhost/iot"><img src="{$imghome}"/>&nbsp&nbsp返回首页</a></li>
+					<li><a href="{$urlUserdata}a=dogroupopera"><img src="{$imgGroup}"/>&nbsp&nbsp设备组操作</a></li>
+					<li><a href="{$_M['url'][site]}data/index.php"><img src="{$imgdevice}"/>&nbsp&nbsp设备列表</a></li>
+					<li><a href="{$urlUserdata}a=doexception"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
+					<li><a href="{$urlUserdata}a=doanalysis"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
                     <li><a href="{$urlUserdata}a=doaddsensor"><img src="{$imgAddSensor}"/>&nbsp;&nbsp创建设备</a></li>
                     <li><a href="{$urlUserdata}a=doaddgroupuser"><img src="{$imgGroupUsers}"/>&nbsp;&nbsp添加组成员</a></li>
-
-
-                    <li><a href="{$urlUserdata}a=doexception"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
-					<li><a href="{$urlUserdata}a=doanalysis"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
 				</ul>
 			</div>
 <!--
