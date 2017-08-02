@@ -17,7 +17,7 @@ $device = "{
 ],
 \"auth_info\":\"$auth_info\";
 \"private\":true,
-\"protocol\":\"$sensor_protocal\"
+\"protocol\":\"MQTT\"
 }";
 
 $datastream = $sm->device_add($device);

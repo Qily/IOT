@@ -54,7 +54,7 @@ echo <<<EOT
 
 	<div class="row">
 		<div class="col-md-12">
-			<img alt="Top Image" src="{$imgTop}">
+			<img alt="Top Image" src="{$imgTop}" style="width:100%">
 		</div>
 	</div>
 	<div class="container-fluid">

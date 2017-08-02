@@ -7,6 +7,10 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
     public function __construct() {
 		global $_M;
         parent::__construct();//如果重写了初始化方法,一定要调用父类的初始化函数。
+
+		$this->sensOper = load::own_class('SensorOperation', 'new');
+
+
         $this->check(1);
 
 		
@@ -17,8 +21,11 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
         $action = $_M[form]['action'];
         switch($action){
             case 'del':
+				$delSensor = DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE id = {$_M[form][id]}");
                 $query = "DELETE from {$_M[table]['userdata_sensor']} WHERE id= {$_M[form][id]}";
                 DB::query($query);
+
+				$this->sensOper->delSensor($delSensor[deviceId]);
                 $sucToPage = $_M[url][site]."data/request_page.php?n=userdata&c=userdata&a=doindex";
                 $text =" 删除成功！";
                 require_once $this -> template('own/success');

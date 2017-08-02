@@ -193,7 +193,7 @@ class userdata extends admin {//继承后台基类。类名称要与文件名一
 
 				$sensor_title = $_M[form]['sensorName'];
 				$sensor_desc = $_M[form]['sensorDescrip'];
-				$sensor_protocal = $_M[form]['sensorProtocal'];
+				$sensro_protocal = $_M[form]['sensorProtocal'];
 				$sensor_tag = $_M[form]['tag'];
 				$auth_info = $_M[form]['authInfo'];
 				$parse_chunk = $_M[form]['parseChunk'];
@@ -236,7 +236,6 @@ class userdata extends admin {//继承后台基类。类名称要与文件名一
 					$query = "INSERT INTO {$sensor_table} SET
 								sensorName = '{$sensor_title}',
 								sensorLoca = '{$sensor_loca}',
-								sensorProtocal = '{$sensor_protocal}',
 								sensorStatus = '{$sensor_status}',
 								tag = '{$sensor_tag}',
 								deviceId = '{$device_id}',

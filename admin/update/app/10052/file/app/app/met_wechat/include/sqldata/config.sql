@@ -1,0 +1,1 @@
+%7B%22wechat_dir%22%3A%22met_wechat%22%2C%22wechat_appid%22%3A%22%22%2C%22wechat_appsecret%22%3A%22%22%2C%22wechat_qrcode%22%3A%22%22%2C%22wechat_token%22%3A%22metinfo%22%2C%22wechat_msg_tmp%22%3A%221%22%2C%22auto_reply_gz%22%3A%221%22%2C%22auto_reply_no%22%3A%222%22%7D
