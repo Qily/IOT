@@ -33,8 +33,28 @@ Class SensorOperation{
 		//展现设备
 		var_dump($datastream);
 	}
-	public function getHistData(){
-	
+	public function getHistData(){     
+        $device_id = "10830731";
+        $datastream_id = "temperature_data_flow";
+        $start_time = "2017-08-03 10:40:00";
+
+        $datastream = $this->getApi()->datapoint_get($device_id, $datastream_id, $start_time);
+
+
+        $error_code = 0;
+        $error = '';
+        if(empty($datastream)){
+            $error_code = $sm->error_no();
+            $error = $sm->error();
+
+        }
+        //print_r($datastream['count']);
+        for($i = 0; $i < $datastream['count']; $i++){
+            print_r($datastream[datastreams][0][datapoints][$i][at]);
+            echo "&nbsp";
+            print_r($datastream[datastreams][0][datapoints][$i][value]);
+            echo "</br>";
+        }
 	}
 
 }

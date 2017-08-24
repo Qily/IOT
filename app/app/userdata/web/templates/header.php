@@ -78,6 +78,10 @@ echo <<<EOT
 
                     <li><a href="{$urlUserdata}a=doexception"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
 					<li><a href="{$urlUserdata}a=doanalysis"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
+
+                    <li><a href="{$urlUserdata}a=dosceneset"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp场景设置</a><li>
+
+                    <li><a href="{$urlUserdata}a=doscenedisplay"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp场景展示</a><li>
 				</ul>
 			</div>
 <!--

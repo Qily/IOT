@@ -201,11 +201,32 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
        }
       public function doanalysis(){
               global $_M;
+              $device_id = "10830731";
+              $datastream_id = "temperature_data_flow";
+              $this->sensOper->getHistData();
               require_once $this->template('own/data_analysis');
        }
        public function doexception(){
               global $_M;
               require_once $this->template('own/data_exception');
+       }
+       public function dosceneset(){
+            global $_M;
+            require_once $this->template('own/scene_set');
+       }
+
+       public function doscenedisplay(){
+            global $_M;
+            require_once $this->template('own/scene_display');
+       }
+       public function douploadscene(){
+            global $_M;
+          //  echo "<script>";
+          //  echo "document.getElementById('scene').innerHTML='<h1>hah<h1>';";
+
+
+        //    echo "</script>";
+            require_once $this->template('own/scene_set');
        }
 }
 ?>
