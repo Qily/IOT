@@ -40,7 +40,7 @@ echo <<<EOT
 	<div class="col-md-12">
 		<div class="col-md-10">
             <span>
-				<img id="btn-add-img" onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片" src="{$addImg}">选择一张.jpg图片</img>
+				<img id="btn-add-img" onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片" src="{$addImg}">选择一张图片</img>
 				
 			</span>
 			<input type="file" id="inputfile" style="height:0;width:0;z-index: -1; position: absolute;left: 10px;top: 5px;"/>

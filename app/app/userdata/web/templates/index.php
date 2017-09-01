@@ -35,92 +35,92 @@ echo <<<EOT
 -->
 
 	
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script type="text/javascript">
-		
-		var sensors_json = {$sensors_json};
-		
-		
-		function load() {
-			function createApp(dom, id, is_model, device_id) {
-				var width = dom.clientWidth;
-				var height = dom.clientHeight;
-				var iframe = document.createElement('iframe');
-				iframe.style.width = width + 'px';
-				iframe.style.height = height + 'px';
-				iframe.style.border = '0 none';
-				iframe.setAttribute('frameBorder', '0');
-				var src = 'https://open.iot.10086.cn/appview/p/' + id;
-				if (Boolean(Number(is_model))) src += '&is_model=1&device_id=' + device_id;
-				iframe.setAttribute('src', src);
-				dom.appendChild(iframe);
-			}
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
 
-			function createApp2(dom, host, openId, is_model, device_id) {
-				var width = dom.clientWidth;
-				var height = dom.clientHeight;
-				var iframe = document.createElement('iframe');
-				iframe.style.width = width + 'px';
-				iframe.style.height = height + 'px';
-				iframe.style.border = '0 none';
-				iframe.setAttribute('frameBorder', '0');
-				var src = (host || 'https://open.iot.10086.cn') + '/app/browse2?openid=' + openId;
-				if (Boolean(Number(is_model))) src += '&is_model=1&device_id=' + device_id;
-				iframe.setAttribute('src', src);
-				dom.appendChild(iframe);
-			}
+var sensors_json = {$sensors_json};
 
-			var appDomList = document.querySelectorAll('.j_10086_iotapp');
-			for (var i = 0; i < appDomList.length; i++) {
-				var dom = appDomList[i];
-				// createApp(dom, dom.getAttribute('data-view'), dom.getAttribute('data-is-model'), dom.getAttribute('data-device-id'));
-				createApp2(dom, dom.getAttribute('data-host'), dom.getAttribute('data-view'), dom.getAttribute('data-is-model'), dom.getAttribute('data-device-id'));
-			}
-		}
 
-		//$(document).ready(function(){
-		//	load();
-		//})
+function load() {
+	function createApp(dom, id, is_model, device_id) {
+		var width = dom.clientWidth;
+		var height = dom.clientHeight;
+		var iframe = document.createElement('iframe');
+		iframe.style.width = width + 'px';
+		iframe.style.height = height + 'px';
+		iframe.style.border = '0 none';
+		iframe.setAttribute('frameBorder', '0');
+		var src = 'https://open.iot.10086.cn/appview/p/' + id;
+		if (Boolean(Number(is_model))) src += '&is_model=1&device_id=' + device_id;
+		iframe.setAttribute('src', src);
+		dom.appendChild(iframe);
+	}
 
-		function changeView(dataView){
-			$("#charts").attr("data-view",dataView);
-			$("iframe").remove();
-			load();
-		}
-		
+	function createApp2(dom, host, openId, is_model, device_id) {
+		var width = dom.clientWidth;
+		var height = dom.clientHeight;
+		var iframe = document.createElement('iframe');
+		iframe.style.width = width + 'px';
+		iframe.style.height = height + 'px';
+		iframe.style.border = '0 none';
+		iframe.setAttribute('frameBorder', '0');
+		var src = (host || 'https://open.iot.10086.cn') + '/app/browse2?openid=' + openId;
+		if (Boolean(Number(is_model))) src += '&is_model=1&device_id=' + device_id;
+		iframe.setAttribute('src', src);
+		dom.appendChild(iframe);
+	}
 
-		window.onload = function IniEvent() {
-			var tbl = document.getElementById("tblMain");
-			var trs = tbl.getElementsByTagName("tr");
+	var appDomList = document.querySelectorAll('.j_10086_iotapp');
+	for (var i = 0; i < appDomList.length; i++) {
+		var dom = appDomList[i];
+		// createApp(dom, dom.getAttribute('data-view'), dom.getAttribute('data-is-model'), dom.getAttribute('data-device-id'));
+		createApp2(dom, dom.getAttribute('data-host'), dom.getAttribute('data-view'), dom.getAttribute('data-is-model'), dom.getAttribute('data-device-id'));
+	}
+}
 
-			for (var i = 0; i < trs.length; i++) {
-				trs[i].onclick = TrOnClick;
-			}
-			trs[0].onclick = TrOnClick;
-			
-			trs[0].style.background = "yellow";
-			changeView(sensors_json[0].dataView);
-                        
-		}
-		function TrOnClick() {
-			var tbl = document.getElementById("tblMain");
-			var trs = tbl.getElementsByTagName("tr");
-			
-			for (var i = 0; i < trs.length; i++) {
+//$(document).ready(function(){
+//	load();
+//})
+
+function changeView(dataView){
+	$("#charts").attr("data-view",dataView);
+	$("iframe").remove();
+	load();
+}
+
+
+window.onload = function IniEvent() {
+	var tbl = document.getElementById("tblMain");
+	var trs = tbl.getElementsByTagName("tr");
+
+	for (var i = 0; i < trs.length; i++) {
+		trs[i].onclick = TrOnClick;
+	}
+	trs[0].onclick = TrOnClick;
+	
+	trs[0].style.background = "yellow";
+	changeView(sensors_json[0].dataView);
 				
-				if (trs[i] == this) { //判断是不是当前选择的行
-					trs[i].style.background = "yellow";
-					for(var j = 0; j < sensors_json.length; j++){
-						if(trs[i].cells[1].innerHTML == sensors_json[j].sensorName){						
-							changeView(sensors_json[j].dataView);
-						}
-					}
- 				}
-				else{
-					trs[i].style.background = "white";
+}
+function TrOnClick() {
+	var tbl = document.getElementById("tblMain");
+	var trs = tbl.getElementsByTagName("tr");
+	
+	for (var i = 0; i < trs.length; i++) {
+		
+		if (trs[i] == this) { //判断是不是当前选择的行
+			trs[i].style.background = "yellow";
+			for(var j = 0; j < sensors_json.length; j++){
+				if(trs[i].cells[1].innerHTML == sensors_json[j].sensorName){						
+					changeView(sensors_json[j].dataView);
 				}
 			}
 		}
+		else{
+			trs[i].style.background = "white";
+		}
+	}
+}
 
 
 
@@ -136,12 +136,12 @@ function showUp(id){
 }
 
 
-	</script>
+</script>
 
 
-				<div class="col-md-8">
-					<div class="col-md-12">
-					<div class="col-md-8">
+<div class="col-md-8">
+	<div class="col-md-12">
+		<div class="col-md-8">
 <div id="p1">
 <form action="{$_M['url'][site]}data/index.php" action="POST">
 <input type="hidden" name="id" id="upId">
@@ -152,57 +152,57 @@ function showUp(id){
 </form>
 </div>
 
-										<table class="table">
-											<thead>
-												<tr>
-													<th></th>
-													<th>名称</th>
-													<th>位置</th>
-                                                                                                        <th>操作</th>
-											</thead>
+				<table class="table">
+					<thead>
+						<tr>
+							<th></th>
+							<th>名称</th>
+							<th>位置</th>
+							<th>操作</th>
+					</thead>
 
-											<tbody id="tblMain">
+					<tbody id="tblMain">
 <!--
 EOT;
 for($i=0; $i<$sensors_count; $i++){
 echo <<<EOT
 -->
-												<tr>
-												
-													<td><img src={$data[$i]} /></td>
-													<td>{$sensors[$i]['sensorName']}</td>
-													<!--<td>{$sensors[$i]['tag']}</td>-->
-													<td>{$sensors[$i]['sensorLoca']}</td>
-                                                                                                         <td><a class="btn btn-warning" onclick="showUp({$sensors[$i]['id']})">修改</a>
-                                                                                                                 <a class="btn btn-danger"  href="javascript:if(confirm('确定删除？'))location='{$urlUserdata}a=doindex&action=del&id={$sensors[$i]['id']}'">删除</a><td>
-												</tr>
-							
+						<tr>
+						
+							<td><img src={$data[$i]} /></td>
+							<td>{$sensors[$i]['sensorName']}</td>
+							<!--<td>{$sensors[$i]['tag']}</td>-->
+							<td>{$sensors[$i]['sensorLoca']}</td>
+						 <td><a class="btn btn-warning" onclick="showUp({$sensors[$i]['id']})">修改</a>
+								 <a class="btn btn-danger"  href="javascript:if(confirm('确定删除？'))location='{$urlUserdata}a=doindex&action=del&id={$sensors[$i]['id']}'">删除</a><td>
+						</tr>
+						
 <!--
 EOT;
 }
 echo <<<EOT
 -->
-											</tbody>
-										</table>
-									</div>
-									
+					</tbody>
+				</table>
+			</div>
+			
 
-									<div class="col-md-4">
-										<div class="j_10086_iotapp" id="charts" data-host="https://open.iot.10086.cn" data-view="fcf021830dc307d45a55c4e9b2e7876c" data-pid="89967" data-appid="19320" style="height:600px">
-										</div>
-									</div>
-
-								</div>
-							</div>
-								
-				<div class="col-md-1"></div>
+			<div class="col-md-4">
+				<div class="j_10086_iotapp" id="charts" data-host="https://open.iot.10086.cn" data-view="fcf021830dc307d45a55c4e9b2e7876c" data-pid="89967" data-appid="19320" style="height:600px">
+				</div>
+			</div>
 
 		</div>
 	</div>
+							
+	<div class="col-md-1"></div>
 
-    <script src="{$jquery_min_js}"></script>
-    <script src="{$bootstrap_min_js}"></script>
-    <script src="{$scripts_js}"></script>
+	</div>
+</div>
+
+<script src="{$jquery_min_js}"></script>
+<script src="{$bootstrap_min_js}"></script>
+<script src="{$scripts_js}"></script>
 <!--
 require_once $this->template('own/footer');
 EOT;

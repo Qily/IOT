@@ -226,7 +226,7 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
 
 
         //    echo "</script>";
-            require_once $this->template('own/scene_set');
+            require_once $this->template('own/upImg');
        }
 }
 ?>
