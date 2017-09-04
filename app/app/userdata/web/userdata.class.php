@@ -228,5 +228,44 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
         //    echo "</script>";
             require_once $this->template('own/upImg');
        }
+
+	   public function doscenesensor(){
+		    global $_M;
+		    
+			//在右侧显示可以添加的传感器
+			//在数据库中查找当前登陆的用户所在的组对应的传感器
+			//在传感器添加完成之后，不能重复添加，因为一个传感器一次只能在一个地方出现
+
+
+			//DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE id = {$_M[form][id]}")
+			//当前登陆用户id
+			$loginUserId = get_met_cookie('metinfo_member_id');
+			//当前id所对应的组
+			$sensorGroups = DB::get_all("SELECT * FROM {$_M[table]['userdata_group_user']} WHERE user_id = '{$loginUserId}'");
+			$totalSensorGroups = count($sensorGroups);
+
+			$groupSensors = array();
+			$index = 0;
+			foreach($sensorGroups as $sensorGroup) {
+				//$groupSensors[$index] = 
+					
+				$temps = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE groupId = '{$sensorGroup['group_id']}'");
+				$j = 0;
+				foreach($temps as $temp){
+					$groupSensors[$index][$j]->type = $temp['tag'];
+					$groupSensors[$index][$j]->name = $temp['sensorName'];
+					$j++;
+				}
+				
+				
+				$index++;
+			}
+			
+			$obj -> _data = $groupSensors;
+			$obj -> _groupCount = $totalSensorGroups;
+			$json_data = json_encode($obj);
+			echo($json_data);
+			//require_once $this->template('own/ScenesetSensor');
+	   }
 }
 ?>
