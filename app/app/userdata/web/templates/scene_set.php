@@ -158,6 +158,7 @@ function saveScene(){
 	if(name!=null && name!=""){
 		//保存进数据库
 		saveImg(name, imgPath);
+		saveSensors();
 	}
 }
 
@@ -175,6 +176,10 @@ function saveImg(name, imgPath){
 			alert('保存出错');
 		}
 	});
+}
+
+function saveSensors(){
+	var p;
 }
 </script>
 <!--
