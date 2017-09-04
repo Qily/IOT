@@ -30,6 +30,7 @@ $jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
 $jquery_min_js_1_6 = $_M[url][own]."web/templates/js/jquery-1.6.2.min.js";
 $scripts_js = $_M[url][own]."web/templates/js/scripts.js";
 $addImg = $_M[url][own]."web/templates/files/addImg.png";
+$dragresize = $_M[url][own]."web/templates/js/$dragresize.js";
 
 
 
@@ -40,7 +41,7 @@ echo <<<EOT
 	<div class="col-md-12">
 		<div class="col-md-10">
             <span>
-				<img id="btn-add-img" onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片" src="{$addImg}">选择一张.jpg图片</img>
+				<img id="btn-add-img" onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片" src="{$addImg}"><span id="add-img-note">选择一张.jpg图片</span></img>
 				
 			</span>
 			<input type="file" id="inputfile" style="height:0;width:0;z-index: -1; position: absolute;left: 10px;top: 5px;"/>
@@ -54,7 +55,10 @@ echo <<<EOT
 		<div class="col-md-2">
 			<input type = "button" class = "btn btn-success col-md-12" value="保存设置" name="save-scene-set">
 			<h3></h3>
-			<img src="{$imghumi}">传感器</img>
+			<div id="sensors-list">
+				<!--<div id ="div1"><img src="{$imghumi}">传感器</img></div>-->
+			</div>
+			
         </div>
 	</div>
 </div>
@@ -67,45 +71,87 @@ echo <<<EOT
 
 <script src="{$jquery_min_js}"></script>
 <script src="{$jquery_min_js_1_6}"></script>
+<script src="{$dragresize}"></script>
 
 <script src="{$bootstrap_min_js}"></script>
 <script src="{$scripts_js}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#inputfile").change(function(){
-	//创建FormData对象
-	var data = new FormData();
-	//为FormData对象添加数据
-	$.each($('#inputfile')[0].files, function(i, file) {
-		data.append('upload_file'+i, file);
-	});
-	//发送数据
 	$.ajax({
-		url:'{$urlUserdata}a=douploadscene',
+		url:'{$urlUserdata}a=doscenesensor',
 		type:'POST',
-		data:data,
-		cache: false,
-		contentType: false,		//不可缺参数
-		processData: false,		//不可缺参数
+		dataType:'json',
+		//cache: false,
+		//contentType: false,		//不可缺参数
+		//processData: false,		//不可缺参数
 		success:function(data){
-			$(".addImgNote").hide();
-			$("#btn-add-img").hide();
-			//data = $(data).html();
-			alert(data);
-			//第一个feedback数据直接append，其他的用before第1个（ .eq(0).before() ）放至最前面。
-			//data.replace(/&lt;/g,'<').replace(/&gt;/g,'>') 转换html标签，否则图片无法显示。
-			if($("#feedback").children('img').length == 0) $("#feedback").append(data);
-			//else $("#feedback").children('img').eq(0).before(data);
-			else{
-				$("#feedback").children('img').remove();
-				$("#feedback").append(data);
+			var html= '';
+			var tag = '{$imghumi}';
+			for(var i = 0; i < data._groupCount; i++) {
+				for(var j = 0; j < data._data[i].length; j++){
+					if(data._data[i][j].type == "humi"){
+						tag = "'{$imghumi}'";
+					} else if(data._data[i][j].type == "temper") {
+						tag = "'{$imgtemper}'";
+					}
+					html += "<div id=sensor-list"+ i +"><img src="+ tag +">"+data._data[i][j].name +'</img>';
+					
+					//alert(data._data[i][j].name);
+				}
+
 			}
+			$('#sensors-list').html(html);
+			//alert(data)
+			
+			$('#sensor-list1').live("click", function(){
+				alert("bb");
+				//$(this).easydrag();
+			});
+			
 		},
 		error:function(){
 			alert('上传出错');
 		}
 	});
-});
+	
+
+	
+
+	$("#inputfile").change(function(){
+		//创建FormData对象
+		var data = new FormData();
+		//为FormData对象添加数据
+		$.each($('#inputfile')[0].files, function(i, file) {
+			data.append('upload_file'+i, file);
+		});
+
+		var divImgWidth = $(document).width() * 0.45;
+		
+		
+		//发送数据
+		$.ajax({
+			url:'{$urlUserdata}a=douploadscene&divImgWidth='+ divImgWidth,
+			type:'POST',
+			data:data,
+			cache: false,
+			
+			contentType: false,		//不可缺参数
+			processData: false,		//不可缺参数
+			success:function(data){
+				$("#add-img-note").hide();
+				$("#btn-add-img").hide();
+				//alert(data);
+				if($("#feedback").children('img').length == 0) $("#feedback").html(data);
+				else{
+					$("#feedback").children('img').remove();
+					$("#feedback").html(data);
+				}
+			},
+			error:function(){
+				alert('上传出错');
+			}
+		});
+	});
 });
 
 
