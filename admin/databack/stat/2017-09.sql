@@ -87,3 +87,9 @@ INSERT INTO met_visit_detail VALUES('','http://localhost/iot/member/login.php?la
 INSERT INTO met_visit_detail VALUES('','http://localhost/iot/member/index.php?lang=cn','1','1','1','','3','0','0','1501516800','');
 INSERT INTO met_visit_detail VALUES('','http://localhost/iot/member/','1','1','1','','3','0','0','1501516800','');
 >>>>>>> 68743c69dbdbef264a03074db6b6a0fa322a4d4d
+INSERT INTO met_visit_day VALUES('','127.0.0.1','1503903519','http://localhost/iot/member/login.php?gourl=http%3A%2F%2Flocalhost%2Fiot%2Fdata%2F','http://localhost/iot/data/','0','0','chrome','','','cn');
+INSERT INTO met_visit_day VALUES('','127.0.0.1','1503903517','http://localhost/IOT/','','10001','0','chrome','','','cn');
+INSERT INTO met_visit_day VALUES('','127.0.0.1','1503890508','http://localhost/iot/member/login.php?gourl=http%3A%2F%2Flocalhost%2Fiot%2Fdata%2F','http://localhost/iot/data/','0','0','chrome','','','cn');
+INSERT INTO met_visit_day VALUES('','127.0.0.1','1503890507','http://localhost/IOT/','','10001','0','chrome','','','cn');
+INSERT INTO met_visit_day VALUES('','127.0.0.1','1503888032','http://localhost/IOT/','','10001','0','chrome','','','cn');
+INSERT INTO met_visit_day VALUES('','127.0.0.1','1503888035','http://localhost/iot/member/login.php?gourl=http%3A%2F%2Flocalhost%2Fiot%2Fdata%2F','http://localhost/iot/data/','0','0','chrome','','','cn');

@@ -36,7 +36,7 @@ foreach($_FILES as $file){
 		$height_deal = $imgDivWidth * ($height/$width);
 
 		$output .= "<img src='{$imgPath}' style='width:{$imgDivWidth}px;height:{$height_deal}px' ' title='{$filename}' alt='{$filename}'/>";
-		$output .= "<input type='hidden' value='{$imgPath}' name='img-path'>";
+		$output .= "<input type='hidden' id='scene-img-path' value='{$imgPath}' name='img-path'/>";
 	}else {
 		$output .= "<img src='{$dir_base}error.jpg' title='{$filename}' alt='{$filename}'/>";
 	}
