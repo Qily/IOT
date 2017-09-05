@@ -74,8 +74,8 @@ function loadScene(index){
 	$("#scene-child").attr('src', imgPath);
 	$("#scene-child").width(imgDivWidth).height(imgDivHeight);
 
-	alert($("#scene-child").offset().left);
-	alert($("#scene-child").offset().top);
+	//alert($("#scene-child").offset().left);
+	//alert($("#scene-child").offset().top);
 }
 
 </script>

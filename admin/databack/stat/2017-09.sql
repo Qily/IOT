@@ -93,3 +93,5 @@ INSERT INTO met_visit_day VALUES('','127.0.0.1','1503890508','http://localhost/i
 INSERT INTO met_visit_day VALUES('','127.0.0.1','1503890507','http://localhost/IOT/','','10001','0','chrome','','','cn');
 INSERT INTO met_visit_day VALUES('','127.0.0.1','1503888032','http://localhost/IOT/','','10001','0','chrome','','','cn');
 INSERT INTO met_visit_day VALUES('','127.0.0.1','1503888035','http://localhost/iot/member/login.php?gourl=http%3A%2F%2Flocalhost%2Fiot%2Fdata%2F','http://localhost/iot/data/','0','0','chrome','','','cn');
+INSERT INTO met_visit_detail VALUES('','http://localhost/iot/member/login.php?gourl=http%3A%2F%2Flocalhost%2Fiot%2Fdata%2F','1','1','1','','2','0','0','1501776000','cn');
+INSERT INTO met_visit_detail VALUES('','http://localhost/iot/data/','1','1','1','','3','0','0','1501776000','');

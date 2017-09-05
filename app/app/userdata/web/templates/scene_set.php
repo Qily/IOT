@@ -130,6 +130,7 @@ function uploadImg(){
 function sensorList(sensorsListData){
 	var html= '';
 	var tag = '{$imghumi}';
+	var sensorsCount = 0;
 	for(var i = 0; i < sensorsListData._groupCount; i++) {
 		for(var j = 0; j < sensorsListData._data[i].length; j++){
 			if(sensorsListData._data[i][j].type == "humi"){
@@ -137,9 +138,12 @@ function sensorList(sensorsListData){
 			} else if(sensorsListData._data[i][j].type == "temper") {
 				tag = "'{$imgtemper}'";
 			}
-			html += "<div id=sensor-list"+ i +"><img src="+ tag +">"+sensorsListData._data[i][j].name +'</img></div>';
+			sensorsCount++;
+			html += "<div id=sensor-list"+ sensorsCount +"><img src="+ tag +">"+sensorsListData._data[i][j].name +'</img></div>';
+			
 		}
 	}
+	html += "<div id='sensors-count' hidden='true'>"+ sensorsCount +"</div>";
 	$('#sensors-list').append(html);
 	$("#sensors-list>div").easydrag();
 }
@@ -155,31 +159,105 @@ function saveScene(){
 	//对数据进行存储
 	//创建一个场景对象，弹出一个输入框输入场景的名称
 	var name = prompt("请输入场景名称");
+	// 注意这里应该有个查重处理
 	if(name!=null && name!=""){
 		//保存进数据库
 		saveImg(name, imgPath);
-		saveSensors();
+		//获取该创景对应的id
+		//var sceneId = getSceneIdByName(name);
+		
+		//alert(sceneId);
+		//saveSensors();
 	}
 }
+function getSceneIdByName(name){
+	//alert(name);
+	//var sceneName = name;
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getSceneId',
+		type:'POST',
+		//dataType:'json',
+		data:{name:name},
+		//async:false,
+		success:function(data){
+			//alert(data);
+			saveSensors(data);
 
+		},
+		error:function(){
+			alert("defeat");
+		}
+	});
+	
+}
 function saveImg(name, imgPath){
 	$.ajax({
-		url:'{$urlUserdata}a=dosceneset&action=save',
+		url:'{$urlUserdata}a=dosceneset&action=saveImg',
 		type:'POST',
 		//dataType:'json',
 		data:{name:name, imgpath:imgPath},
 		
 		success:function(data){
-			alert("保存成功");
+			alert("保存图片场景成功");
+			getSceneIdByName(name);
 		},
 		error:function(){
-			alert('保存出错');
+			alert('保存图片场景出错！');
 		}
 	});
 }
 
-function saveSensors(){
-	var p;
+function saveSensors(sceneId){
+	//在图片范围之内的保存，在图片范围之外的不保存，首先就要确定图片（场景）的边界
+	var divLeft = $("#feedback").offset().left;
+	var divTop = $("#feedback").offset().top;
+	var divRight = divLeft + $("#feedback").width();
+	var divBottom = divTop + $("#feedback").height();
+	var sensorsCount = $("#sensors-count").text();
+	for(var i = 1; i <= sensorsCount; i++){
+		var sensorLeft = $('#sensor-list'+i).offset().left;
+		var sensorTop = $('#sensor-list'+i).offset().top;
+		if(sensorLeft > divLeft && sensorLeft < divRight
+				&& sensorTop > divTop && sensorTop < divBottom){
+			//alert(sensorLeft + "/" + sensorTop);
+			//计算出传感器相对于img的比例系数
+			//将数据记录到数据库中
+			//同时，也要记录id，方便对创景进行修改
+			//方式和savaImg()基本相同，都是ajax请求后端存储
+			var relaWidth = (sensorLeft - divLeft)/(divRight - divLeft);
+			var relaHeight = (sensorTop - divTop)/(divBottom - divTop);
+			//数据库字段有id（auto_increamse）,sensor_id, scene_id, rela_width, rela_height
+			//只有sensor_id还没有，所以通过ajax获取到
+			var sensorName = $('#sensor-list'+i).text();
+			$.ajax({
+				url:'{$urlUserdata}a=dogetinfo&action=getSensorId&sensorname='+sensorName,
+				type:'POST',
+				success:function(data){
+					saveToDB(data, sceneId, relaWidth, relaHeight);
+				},
+				error:function(){
+					alert('获取传感器信息失败！');
+				}
+			});
+		}
+	}
+}
+
+
+function saveToDB(data, sceneId, relaWidth, relaHeight){
+	alert(data+" / "+sceneId+ "/" +relaWidth+ "/" +relaHeight);
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=saveSensorinfo',
+		type:'POST',
+		data:{sensorId:data, sceneId:sceneId, relaWidth:relaWidth, relaHeight:relaHeight},
+		
+		success:function(data){
+			alert("保存成功！");
+		},
+		error:function(){
+			alert("保存信息失败，请重新尝试");
+		}
+	});
 }
 </script>
 <!--

@@ -218,15 +218,14 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
             $loginUserId = get_met_cookie('metinfo_member_id');
             $createDate = date("Y/m/d");
             switch($action){
-                case 'save':
-                    echo($sceneImgPath);
+                case 'saveImg':
+                    //echo($sceneImgPath);
                     $query = "INSERT INTO {$_M[table]['userdata_scene']} SET
                             name = '{$scenename}',
                             img_path = '{$sceneImgPath}',
                             create_man_id = '{$loginUserId}',
                             create_date = '{$createDate}'";
                      DB::query($query);
-
                     break;
                 default:
                     break;
@@ -246,6 +245,34 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
 
         //    echo "</script>";
             require_once $this->template('own/upImg');
+       }
+       public function dogetinfo(){
+            global $_M;
+            $action = $_M['form']['action'];
+            $scenename = $_M['form']['name'];
+            switch($action){
+                //用于scene_set中获取场景号信息，在dosceneset()中的话，网页跳转的语句影响输出结果
+                case 'getSceneId':
+                    $sceneData = DB::get_one("SELECT * FROM {$_M[table]['userdata_scene']} WHERE name = '{$scenename}'");
+                    echo($sceneData['id']);
+                    break;
+                case 'getSensorId':
+                    $sensorData = DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE sensorName = '{$_M['form']['sensorname']}'");
+                    echo($sensorData['id']);
+                    break;
+                case 'saveSensorinfo':
+                    $sensorId = $_M['form']['sensorId'];
+                    $query = "INSERT INTO {$_M[table]['userdata_scene_sensor']} SET
+                            sensor_id = '{$sensorId}',
+                            scene_id = '{$_M['form']['sceneId']}',
+                            rela_width = '{$_M['form']['relaWidth']}',
+                            rela_height = '{$_M['form']['relaHeight']}'";
+                    DB::query($query);
+                    echo("success");
+                    break;
+                default:
+                    break;
+            }
        }
 }
 ?>
