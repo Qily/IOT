@@ -14,6 +14,8 @@ $imgTop = $_M[url][own]."img/top.png";
 $imgGroup = $_M[url][own]."img/group.png";
 $imgGroupUsers = $_M[url][own]."img/groupUsers.png";
 $imgAddSensor = $_M[url][own]."img/addSensor.png";
+$imgSceneSet = $_M[url][own]."img/sceneset.png";
+$imgSceneDisplay = $_M[url][own]."img/scenedisplay.png";
 
 
 $data_analysis_page = $_M[url][own]."web/templates/data_analysis.php";
@@ -26,6 +28,8 @@ $style_css = $_M[url][own]."web/templates/css/style.css";
 $bootstrap_min_js = $_M[url][own]."web/templates/css/bootstrap.min.js";
 $jquery_min_js = $_M[url][own]."web/templates/css/jquery.min.js";
 $scripts_js = $_M[url][own]."web/templates/css/scripts.js";
+
+
 
 $urlUserdata = $_M['url'][site]."data/request_page.php?n=userdata&c=userdata&";
 
@@ -52,13 +56,10 @@ echo <<<EOT
 </head>
 <body>
 
-	<div class="row">
-		<div class="col-md-12">
-			<img alt="Top Image" src="{$imgTop}" style="width:100%">
-		</div>
-	</div>
+	
 	<div class="container-fluid">
 		<div class="row">
+		<img alt="Top Image" src="{$imgTop}" style="width:100%">
 			<div class="col-md-12" style="height:50px"></div>
 		</div>
 		<div class="row">
@@ -79,9 +80,9 @@ echo <<<EOT
                     <li><a href="{$urlUserdata}a=doexception"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
 					<li><a href="{$urlUserdata}a=doanalysis"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
 
-                    <li><a href="{$urlUserdata}a=dosceneset"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp场景设置</a><li>
+                    <li><a href="{$urlUserdata}a=dosceneset"><img src="{$imgSceneSet}"/>&nbsp;&nbsp场景设置</a><li>
 
-                    <li><a href="{$urlUserdata}a=doscenedisplay"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp场景展示</a><li>
+                    <li><a href="{$urlUserdata}a=doscenedisplay"><img src="{$imgSceneDisplay}"/>&nbsp;&nbsp场景展示</a><li>
 				</ul>
 			</div>
 <!--

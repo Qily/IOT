@@ -196,10 +196,7 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
     }
     
     public function doanalysis(){
-        global $_M;
-        $device_id = "10830731";
-        $datastream_id = "temperature_data_flow";
-        $this->sensOper->getHistData();
+        global $_M;        
         require_once $this->template('own/data_analysis');
     }
     
@@ -278,6 +275,22 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                         create_date ='{$createDate}'";
                 DB::query($query);
                 echo($query);
+                break;
+            case 'getHistData':
+                $device_id = "10830731";
+                $datastream_id = "temperature_data_flow";
+                $dataHist = $this->sensOper->getHistData();
+
+                //print_r($datastream['count']);
+                // for($i = 0; $i < $datastream['count']; $i++){
+                //     print_r($datastream[datastreams][0][datapoints][$i][at]);
+                //     echo "&nbsp";
+                //     print_r($datastream[datastreams][0][datapoints][$i][value]);
+                //     echo "</br>";
+                // }
+
+                $json_data = json_encode($dataHist);
+                echo($json_data);
                 break;
             default:
                 break;

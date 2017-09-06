@@ -16,8 +16,6 @@ $scripts_js = $_M[url][own]."web/templates/js/scripts.js";
 
 $imgScene = $_M[url][own]."img/scene.png";
 
-
-
 echo <<<EOT
 -->
 

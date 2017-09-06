@@ -45,16 +45,12 @@ Class SensorOperation{
         $error = '';
         if(empty($datastream)){
             $error_code = $sm->error_no();
-            $error = $sm->error();
-
-        }
-        //print_r($datastream['count']);
-        for($i = 0; $i < $datastream['count']; $i++){
-            print_r($datastream[datastreams][0][datapoints][$i][at]);
-            echo "&nbsp";
-            print_r($datastream[datastreams][0][datapoints][$i][value]);
-            echo "</br>";
-        }
+			$error = $sm->error();
+			return "error";
+        } else {
+			return $datastream;
+		}
+        
 	}
 
 }
