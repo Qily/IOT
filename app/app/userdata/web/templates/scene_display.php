@@ -46,8 +46,6 @@ echo <<<EOT
 <script src="{$scripts_js}"></script>
 <script >
 $(document).ready(function (){
-	//alert($scenes_json);
-
 	//加载场景列表
 	var html = "";
 	for(var i = 0; i < $scenes_json._data.length; i++){
@@ -58,6 +56,7 @@ $(document).ready(function (){
 	//加载第一个场景
 	loadScene(0);
 	//加载场景对应的传感器
+
 });
 
 function loadScene(index){
@@ -69,13 +68,86 @@ function loadScene(index){
 	img.src = $("#originImg").attr("src");
 	var imgDivWidth = $(document).width() * 0.45;
 	var imgDivHeight = imgDivWidth * (img.height/ img.width);
-	//var html = "<img src=" + imgPath +" style='width:'+ imgDivWidth +'px;height:'+ imgDivHeight +'px' title='ccc' alt='ccc'/>";
-	//$("#scene").append(html);
 	$("#scene-child").attr('src', imgPath);
 	$("#scene-child").width(imgDivWidth).height(imgDivHeight);
 
-	//alert($("#scene-child").offset().left);
-	//alert($("#scene-child").offset().top);
+	//加载场景对应的传感器
+	//方法是通过图片路径找出对应的场景号
+	//然后通过场景号找出对应的传感器id，name,rela_width, rela_height,
+	//实现场景的再现
+	loadSensors(imgPath);
+}
+
+function loadSensors(imgPath){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getSceneByImgPath&imgPath='+imgPath,
+		type:'POST',
+		success:function(data){
+			//data中记录的是sceneId
+			//通过sceneId找出所有的传感器，以及对应的信息
+			getAllSensors(data);
+		},
+		error:function(){
+			alert("获取场景id出错！");
+		}
+	});
+}
+
+function getAllSensors(sceneId){
+	$("#scene").children(".sensors").remove();
+	
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getAllSensors&sceneId='+sceneId,
+		dataType:'json',
+		type:'POST',
+		success:function(data){
+			//alert(data._data[0].id);
+			for(var i = 0; i < data._count; i++){
+				getSensorById(data._data[i].sensor_id, i, data._data[i].rela_width, data._data[i].rela_height);
+			}
+			
+		},
+		error:function(){
+			alert("获取场景对应的传感器出错！");
+		}
+	});
+}
+
+function getSensorById(sensorId, index, relaWidth, relaHeight){
+	var html = "";
+	var sensorIcon = '{$imgtemper}';
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getSensorById&sensorId='+sensorId,
+		type:'json',
+		dataType:'json',
+		async: false,
+		success:function(data){
+			//alert(data.tag)
+			if(data.tag == 'humi'){
+				sensorIcon = '{$imghumi}';
+			} else if(data.tag == 'temper'){
+				sensorIcon = '{$imgtemper}';
+			}
+			// var sleft = $("#scene-child").offset().left + $("#scene-child").width() * relaWidth;
+			// var stop = $("#scene-child").offset().top + $("#scene-child").height() * relaHeight;
+			var sleft = $("#scene-child").width() * relaWidth;
+			var stop = $("#scene-child").height() * relaHeight;
+			html = "<div class='sensors' id=sensor-in-scene"+ index +"><img src="+ sensorIcon +" />"+ data.name +"</div>";
+			//alert(html);
+			//计算坐标绝对值
+			
+			//alert(sleft +"***"+stop)
+			//alert($("#scene-child").width() *relaWidth);
+
+			//alert(html);
+			$('#scene').append(html);
+			//alert($("#sensor-in-scene0").text());
+			$("#sensor-in-scene"+index).css({'position':'absolute', 'left':sleft+'px', 'top':stop+'px'});
+		},
+		error:function(){
+
+		}
+	}).responseText;
 }
 
 </script>

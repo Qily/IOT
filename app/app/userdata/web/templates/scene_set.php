@@ -52,7 +52,6 @@ echo <<<EOT
 			</span>
 			<input type="file" id="inputfile" style="height:0;width:0;z-index: -1; position: absolute;left: 10px;top: 5px;"/>
             <div id="feedback">
-             
             </div>
         </div>
 
@@ -192,13 +191,13 @@ function getSceneIdByName(name){
 }
 function saveImg(name, imgPath){
 	$.ajax({
-		url:'{$urlUserdata}a=dosceneset&action=saveImg',
+		url:'{$urlUserdata}a=dogetinfo&action=saveImg',
 		type:'POST',
 		//dataType:'json',
-		data:{name:name, imgpath:imgPath},
+		data:{name:name, imgPath:imgPath},
 		
 		success:function(data){
-			alert("保存图片场景成功");
+			//alert(data);
 			getSceneIdByName(name);
 		},
 		error:function(){
@@ -217,6 +216,7 @@ function saveSensors(sceneId){
 	for(var i = 1; i <= sensorsCount; i++){
 		var sensorLeft = $('#sensor-list'+i).offset().left;
 		var sensorTop = $('#sensor-list'+i).offset().top;
+		//alert(sensorLeft+"..."+sensorTop);
 		if(sensorLeft > divLeft && sensorLeft < divRight
 				&& sensorTop > divTop && sensorTop < divBottom){
 			//alert(sensorLeft + "/" + sensorTop);
@@ -228,17 +228,20 @@ function saveSensors(sceneId){
 			var relaHeight = (sensorTop - divTop)/(divBottom - divTop);
 			//数据库字段有id（auto_increamse）,sensor_id, scene_id, rela_width, rela_height
 			//只有sensor_id还没有，所以通过ajax获取到
+			
 			var sensorName = $('#sensor-list'+i).text();
 			$.ajax({
 				url:'{$urlUserdata}a=dogetinfo&action=getSensorId&sensorname='+sensorName,
 				type:'POST',
+				async:false,
 				success:function(data){
+					alert(relaWidth + "/" + relaHeight);
 					saveToDB(data, sceneId, relaWidth, relaHeight);
 				},
 				error:function(){
 					alert('获取传感器信息失败！');
 				}
-			});
+			}).responseText;
 		}
 	}
 }
@@ -250,14 +253,14 @@ function saveToDB(data, sceneId, relaWidth, relaHeight){
 		url:'{$urlUserdata}a=dogetinfo&action=saveSensorinfo',
 		type:'POST',
 		data:{sensorId:data, sceneId:sceneId, relaWidth:relaWidth, relaHeight:relaHeight},
-		
+		async:false,
 		success:function(data){
 			alert("保存成功！");
 		},
 		error:function(){
 			alert("保存信息失败，请重新尝试");
 		}
-	});
+	}).responseText;
 }
 </script>
 <!--
