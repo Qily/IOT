@@ -16,12 +16,11 @@ $imgGroupUsers = $_M[url][own]."img/groupUsers.png";
 $imgAddSensor = $_M[url][own]."img/addSensor.png";
 $imgSceneSet = $_M[url][own]."img/sceneset.png";
 $imgSceneDisplay = $_M[url][own]."img/scenedisplay.png";
-
+$imgAdd = $_M[url][own]."img/add.png";
 
 $data_analysis_page = $_M[url][own]."web/templates/data_analysis.php";
 $group_opera = "http://ttggcc.get.vip/data/group_opera.php";
 $devices_page= "http://ttggcc.get.vip/data/index.php";
-
 $bootstrap_min_css = $_M[url][own]."web/templates/css/bootstrap.min.css";
 $style_css = $_M[url][own]."web/templates/css/style.css";
 
@@ -39,17 +38,12 @@ echo <<<EOT
 <html lang="en">
 <head>
 	<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-    
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     <meta name="description" content="">
     <meta name="author" content="设备相关">
     <!--<meta http-equiv=refresh content="10">-->
 
     <title>{$title}</title>
-
-	
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 	<link href="{$bootstrap_min_css}" rel="stylesheet"> 
     <link href="{$style_css}" rel="stylesheet">
@@ -60,7 +54,7 @@ echo <<<EOT
 	<div class="container-fluid">
 		<div class="row">
 		<img alt="Top Image" src="{$imgTop}" style="width:100%">
-			<div class="col-md-12" style="height:50px"></div>
+		<div class="col-md-12" style="height:50px"></div>
 		</div>
 		<div class="row">
 			<div class="col-md-1"></div>

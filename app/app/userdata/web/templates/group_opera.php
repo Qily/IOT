@@ -42,7 +42,7 @@ for($i = 0; $i < count($loginUserGroups); $i++){
       $order = $i + 1;
 echo <<<EOT
 -->
-                                         <tr>
+					<tr>
 						<td>
 							{$order}
 						</td>
@@ -58,7 +58,7 @@ EOT;
 if($createUser['username'] != get_met_cookie('metinfo_member_name')){
 echo <<<EOT
 -->
-                                                        <a class="btn btn-primary" disabled="true">删除</a>
+							<a class="btn btn-primary" disabled="true">删除</a>
 
 <!--
 EOT;
@@ -72,7 +72,7 @@ EOT;
 echo <<<EOT
 -->
 						</td>
-                                         </tr>
+					</tr>
 <!--
 EOT;
 }
