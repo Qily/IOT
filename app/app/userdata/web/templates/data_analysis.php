@@ -11,7 +11,7 @@ echo <<<EOT
 <div class="col-md-8">
 	<div class="col-md-9">
 	<form role="form" action="{$urlUserdata}a=dogroupopera&action=create" method="POST">
-		<div class="form-group text-center" id="test">
+		<div class="form-group" id="test">
 			
 			<label for="exampleInputEmail1">
 				设备名称
@@ -31,7 +31,7 @@ echo <<<EOT
 			<!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<img src="{$imgAdd}" />-->
 		</div>
-		<div class="form-group text-center">
+		<div class="form-group">
 		
 		<label for="exampleInputEmail1">
 			设备名称
@@ -52,7 +52,7 @@ echo <<<EOT
 			<img src="{$imgAdd}" />-->
 		</div>
 
-		<div class="form-group text-center">
+		<div class="form-group">
 		
 			<label for="exampleInputEmail1">
 				设备名称
@@ -73,7 +73,7 @@ echo <<<EOT
 			<img src="{$imgAdd}" />-->
 		</div>
 
-		<button type="submit" class="btn btn-success form-control" style="width:95%">
+		<button type="submit" class="btn btn-success form-control" style="width:82.5%">
 			开始分析
 		</button>
 	</form>

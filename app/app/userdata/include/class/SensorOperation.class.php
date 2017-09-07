@@ -53,4 +53,23 @@ Class SensorOperation{
         
 	}
 
+
+	public function getLastDatapoint(){
+		$device_id = "10830731";
+		$datastream_id = "temperature_data_flow";
+		date_default_timezone_set("Asia/Shanghai");
+		$end_time = date("y-m-d H:i:s");
+		$datastream = $this->getApi()->datapoint_get($device_id, $datastream_id, null, $end_time);
+
+		$error_code = 0;
+        $error = '';
+        if(empty($datastream)){
+            $error_code = $sm->error_no();
+			$error = $sm->error();
+			return "error";
+        } else {
+			return $datastream;
+		}
+	}
+
 }

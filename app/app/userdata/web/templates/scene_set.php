@@ -9,27 +9,20 @@ require_once $this->template('own/header');
 //在传感器添加完成之后，不能重复添加，因为一个传感器一次只能在一个地方出现
 //DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE id = {$_M[form][id]}")
 //当前登陆用户id
-$loginUserId = get_met_cookie('metinfo_member_id');
-//当前id所对应的组
-$sensorGroups = DB::get_all("SELECT * FROM {$_M[table]['userdata_group_user']} WHERE user_id = '{$loginUserId}'");
-$totalSensorGroups = count($sensorGroups);
-
-$groupSensors = array();
-$index = 0;
-foreach($sensorGroups as $sensorGroup) {
-	$temps = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE groupId = '{$sensorGroup['group_id']}'");
-	$j = 0;
-	foreach($temps as $temp){
-		$groupSensors[$index][$j]->type = $temp['tag'];
-		$groupSensors[$index][$j]->name = $temp['sensorName'];
-		$j++;
+$loginId = get_met_cookie('metinfo_member_id');
+$user_groups = DB::get_all("select * from {$_M[table]['userdata_group_user']} where user_id = '{$loginId}'");
+$sensors = array();
+for($i = 0; $i < count($user_groups); $i++){
+      $sensorSingleGroup = DB::get_all("select * from {$_M[table]['userdata_sensor']} where groupId = '{$user_groups[$i]['group_id']}' ORDER BY id ASC");
+     if($sensorSingleGroup != null){
+      $sensors = array_merge($sensors, $sensorSingleGroup);
 	}
-	$index++;
 }
-
-$obj -> _data = $groupSensors;
-$obj -> _groupCount = $totalSensorGroups;
+$sensors_count = count($sensors);
+$obj -> _data = $sensors;
+$obj -> _sensorsCount = $sensors_count;
 $json_data = json_encode($obj);
+
 
 $bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
 $jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
@@ -112,7 +105,6 @@ function uploadImg(){
 			success:function(data){
 				$("#add-img-note").hide();
 				$("#btn-add-img").hide();
-				//alert(data);
 				if($("#feedback").children('img').length == 0) $("#feedback").html(data);
 				else{
 					$("#feedback").children('img').remove();
@@ -128,21 +120,18 @@ function uploadImg(){
 
 function sensorList(sensorsListData){
 	var html= '';
-	var tag = '{$imghumi}';
-	var sensorsCount = 0;
-	for(var i = 0; i < sensorsListData._groupCount; i++) {
-		for(var j = 0; j < sensorsListData._data[i].length; j++){
-			if(sensorsListData._data[i][j].type == "humi"){
-				tag = "'{$imghumi}'";
-			} else if(sensorsListData._data[i][j].type == "temper") {
-				tag = "'{$imgtemper}'";
-			}
-			sensorsCount++;
-			html += "<div id=sensor-list"+ sensorsCount +"><img src="+ tag +">"+sensorsListData._data[i][j].name +'</img></div>';
-			
+	var sensorType = '{$imghumi}';
+	var sensorsCount = sensorsListData._sensorsCount;
+	for(var i = 0; i < sensorsCount; i++) {
+		if(sensorsListData._data[i]['tag'] == "humi"){
+			sensorType = "'{$imghumi}'";
+		} else if(sensorsListData._data[i]['tag'] == "temper"){
+			sensorType = "'{$imgtemper}'";
 		}
+		html += "<div id=sensor-list"+ i +"><img src="+sensorType+">"+sensorsListData._data[i]['sensorName']+'</img></div>';
 	}
 	html += "<div id='sensors-count' hidden='true'>"+ sensorsCount +"</div>";
+	
 	$('#sensors-list').append(html);
 	$("#sensors-list>div").easydrag();
 }
@@ -162,15 +151,9 @@ function saveScene(){
 	if(name!=null && name!=""){
 		//保存进数据库
 		saveImg(name, imgPath);
-		//获取该创景对应的id
-		//var sceneId = getSceneIdByName(name);
-		
-		//alert(sceneId);
-		//saveSensors();
 	}
 }
 function getSceneIdByName(name){
-	//alert(name);
 	//var sceneName = name;
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=getSceneId',
@@ -179,12 +162,12 @@ function getSceneIdByName(name){
 		data:{name:name},
 		//async:false,
 		success:function(data){
-			//alert(data);
 			saveSensors(data);
+			alert("保存场景成功！")
 
 		},
 		error:function(){
-			alert("defeat");
+			alert("保存失败，请重新尝试...");
 		}
 	});
 	
@@ -197,11 +180,10 @@ function saveImg(name, imgPath){
 		data:{name:name, imgPath:imgPath},
 		
 		success:function(data){
-			//alert(data);
 			getSceneIdByName(name);
 		},
 		error:function(){
-			alert('保存图片场景出错！');
+			alert('保存图片场景出错！请重新尝试...');
 		}
 	});
 }
@@ -213,13 +195,11 @@ function saveSensors(sceneId){
 	var divRight = divLeft + $("#feedback").width();
 	var divBottom = divTop + $("#feedback").height();
 	var sensorsCount = $("#sensors-count").text();
-	for(var i = 1; i <= sensorsCount; i++){
+	for(var i = 0; i < sensorsCount; i++){
 		var sensorLeft = $('#sensor-list'+i).offset().left;
 		var sensorTop = $('#sensor-list'+i).offset().top;
-		//alert(sensorLeft+"..."+sensorTop);
 		if(sensorLeft > divLeft && sensorLeft < divRight
 				&& sensorTop > divTop && sensorTop < divBottom){
-			//alert(sensorLeft + "/" + sensorTop);
 			//计算出传感器相对于img的比例系数
 			//将数据记录到数据库中
 			//同时，也要记录id，方便对创景进行修改
@@ -235,11 +215,10 @@ function saveSensors(sceneId){
 				type:'POST',
 				async:false,
 				success:function(data){
-					alert(relaWidth + "/" + relaHeight);
 					saveToDB(data, sceneId, relaWidth, relaHeight);
 				},
 				error:function(){
-					alert('获取传感器信息失败！');
+					alert('获取传感器信息失败！请重新尝试...');
 				}
 			}).responseText;
 		}
@@ -248,17 +227,16 @@ function saveSensors(sceneId){
 
 
 function saveToDB(data, sceneId, relaWidth, relaHeight){
-	alert(data+" / "+sceneId+ "/" +relaWidth+ "/" +relaHeight);
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=saveSensorinfo',
 		type:'POST',
 		data:{sensorId:data, sceneId:sceneId, relaWidth:relaWidth, relaHeight:relaHeight},
 		async:false,
 		success:function(data){
-			alert("保存成功！");
+			//alert("保存成功！");
 		},
 		error:function(){
-			alert("保存信息失败，请重新尝试");
+			alert("保存信息失败，请重新尝试...");
 		}
 	}).responseText;
 }
