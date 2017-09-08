@@ -277,9 +277,18 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 echo($query);
                 break;
             case 'getHistData':
-                $device_id = "10830731";
-                $datastream_id = "temperature_data_flow";
-                $dataHist = $this->sensOper->getHistData();
+                $sensorData = DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE sensorName = '{$_M['form']['sensorName']}'");
+                $device_id = $sensorData['deviceId'];
+                if($sensorData['tag'] == 'humi'){
+                    $datastream_id = "humidity_data_flow";
+                } else{
+                    $datastream_id = "temperature_data_flow";
+                }
+                
+                $start_time = $_M[form]['startTime'];
+                $end_time = $_M[form]['endTime'];
+                $limit = 100;
+                $dataHist = $this->sensOper->getHistData($device_id, $datastream_id, $start_time,$end_time, $limit);
 
                 //print_r($datastream['count']);
                 // for($i = 0; $i < $datastream['count']; $i++){

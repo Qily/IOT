@@ -13,29 +13,22 @@ echo <<<EOT
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
-						<form role="form" action="{$urlUserdata}a=dogroupopera&action=create" method="POST">
+						<form>
 
 							<div class="col-md-4">
 								<div class="row">
 									<div class="form-group" style="background-color:#CBA">
 										
-										<label for="exampleInputEmail1">
-											设备名称
-										</label>
+										<label>设备名称</label>
 										<div class="controls">
-											<select class="form-control" name="sensorType">
-												
-											</select>
+											<select class="form-control" id="first-sensor-name"></select>
 										</div>
 										
-										<label>
-											开始日期
-										</label>
-										<input type="text" name="loginPassword" class="form-control calender"/>
-										<label>
-											结束日期
-										</label>
-										<input type="text" name="loginPassword" class="form-control calender"/>
+										<label>开始日期</label>
+										<input type="text" id="first-start-time" class="form-control calender"/>
+
+										<label>结束日期</label>
+										<input type="text" id="first-end-time" class="form-control calender"/>
 									</div>
 								</div>
 							</div>
@@ -44,23 +37,17 @@ echo <<<EOT
 								<div class="row">
 									<div class="form-group" style="background-color:#ABC">
 									
-									<label for="exampleInputEmail1">
-										设备名称
-										</label>
+										<label>设备名称</label>
 										<div class="controls">
-											<select class="form-control" name="sensorType">
-												
-											</select>
+											<select class="form-control" id="second-sensor-name"></select>
 										</div>
 
-										<label>
-											开始日期
-										</label>
-										<input type="text" name="loginPassword" class="form-control calender"/>
+										<label>开始日期</label>
+										<input type="text" id="second-start-time" class="form-control calender"/>
 										<label>
 											结束日期
 										</label>
-										<input type="text" name="loginPassword" class="form-control calender"/>
+										<input type="text" id="second-end-time" class="form-control calender"/>
 									</div>
 								</div>
 							</div>
@@ -69,36 +56,26 @@ echo <<<EOT
 								<div class="row">
 									<div class="form-group" style="background-color:#999999">
 									
-										<label for="exampleInputEmail1">
-											设备名称
-										</label>
+										<label>设备名称</label>
 										<div class="controls">
-											<select class="form-control" name="sensorType">
-												
-											</select>
+											<select class="form-control" id="third-sensor-name"></select>
 										</div>		
 
-										<label>
-											开始日期
-										</label>
-										<input type="text" name="loginPassword" class="form-control calender"/>
-										<label>
-											结束日期
-										</label>
-										<input type="text" name="loginPassword" class="form-control calender"/>
+										<label>开始日期</label>
+										<input type="text" id="third-start-time" class="form-control calender"/>
+										<label>结束日期</label>
+										<input type="text" id="third-end-time" class="form-control calender"/>
 									</div>
 								</div>
 							</div>
 
-							<button type="submit" class="btn btn-primary form-control" >
-								开始分析
-							</button>
+							<input type="button" class="btn btn-primary form-control" onclick="plotAllCharts()" value="开始分析" />
 						</form>
-						<div>
+						<div id="charts">
 							<div style="height: 20px"></div>
-							<div id="container" style="height: 400px"></div>
-							<div id="container1" style="height: 400px"></div>
-							<div id="container2" style="height: 400px"></div>
+							<!--<div id="container" style="height:400px"></div>
+							<div id="container1" style="height:400px"></div>
+							<div id="container2" style="height:400px"></div>-->
 						</div>
 					</div>
 				</div>
@@ -106,7 +83,7 @@ echo <<<EOT
 			</div>
 		</div>
 		<div class="col-md-4">
-			<div style="height: 250px"></div>
+			<div style="height: 290px"></div>
 			<div id="analysis-data"></div><!-- analysis-data -->
 		</div><!-- col-md-3 -->
 	</div>
@@ -121,20 +98,59 @@ echo <<<EOT
 <script type="text/javascript">
 window.onload = function(){
 	loadSelectList();
-
-	var domId = "container";
-	getHistData(domId);
-	var domId1 = "container1";
-	getHistData(domId1);
-
+	$.datetimepicker.setLocale('ch');
 	$(".calender").datetimepicker({
 		//value:'2017-09-08 10:54',
 		format:'Y-m-d H:i:s',
 		minDate:'2017/08/01',
 		step:20
 	});
-	
-	
+}
+
+function plotAllCharts(){
+	if($("#first-sensor-name").val() != '不启用'){
+		if($("#container1")){
+			$("#container1").remove();
+		}
+		$("#charts").append("<div id='container1' style='height:400px'></div>")
+		var container = "container1";
+		var sensorName = $("#first-sensor-name").val();
+		var startTime = $("#first-start-time").val();
+		var endTime = $("#first-end-time").val();
+		
+		if(startTime == "" || startTime == null) startTime = null;
+		if(endTime == "" || endTime == null) endTime = null;
+		getHistData(container, sensorName, startTime, endTime);
+	}
+	if($("#second-sensor-name").val() != '不启用'){
+		if($("#container2")){
+			$("#container2").remove();
+		}
+		$("#charts").append("<div id='container2' style='height:400px'></div>")
+		var container = "container2";
+		var sensorName = $("#second-sensor-name").val();
+		var startTime = $("#second-start-time").val();
+		var endTime = $("#second-end-time").val();
+		
+		if(startTime == "" || startTime == null) startTime = null;
+		if(endTime == "" || endTime == null) endTime = null;
+		getHistData(container, sensorName, startTime, endTime);
+	}
+	if($("#third-sensor-name").val() != '不启用'){
+		if($("#container3")){
+			$("#container3").remove();
+		}
+		$("#charts").append("<div id='container3' style='height:400px'></div>")
+		var container = "container3";
+		var sensorName = $("#third-sensor-name").val();
+		var startTime = $("#third-start-time").val();
+		var endTime = $("#third-end-time").val();
+		
+		if(startTime == "" || startTime == null) startTime = null;
+		if(endTime == "" || endTime == null) endTime = null;
+	 	
+		getHistData(container, sensorName, startTime, endTime);
+	}
 }
 
 
@@ -149,7 +165,9 @@ function loadSelectList(){
 			//通过传回来的传感器参数获得对应的sensorName
 			//将sensorName放到select中
 			var html="";
+			html += "<option>不启用</option>"
 			for(var i = 0; i < data._count; i++){
+				
 				html += "<option>"+ data._data[i].sensorName +"</option>"
 			}
 			$("select").append(html);
@@ -161,14 +179,16 @@ function loadSelectList(){
 	});
 }
 
-function getHistData(domId){
+function getHistData(domId, sensorName, startTime, endTime){
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=getHistData',
 		type:'POST',
 		dataType:'json',
 		async:false,
+		data:{sensorName:sensorName, startTime:startTime, endTime:endTime},
 		success:function(data){
-			//alert(data.datastreams[0].datapoints[0].at);
+			//alert(sensorName+"+"+startTime+"+"+endTime);
+			//alert(data);
 			plot_static(data, domId);
 		},
 		error:function(){
@@ -272,8 +292,8 @@ function plot_static(datastream, domId){
 		dataX[i] = datastream.datastreams[0].datapoints[i].at;
 		data1[i] = datastream.datastreams[0].datapoints[i].value;
 	}
-
-	dealData(data1, datastream.count);
+	
+	dealData(domId, data1, datastream.count);
 
 	option = {
 		title: {
@@ -324,7 +344,7 @@ function plot_static(datastream, domId){
 }
 
 
-function dealData(data, dataLength){
+function dealData(domId, data, dataLength){
 	var step = 3;//阈值
 	var count = 0; //表示异常数据的个数
 	var eData = new Array();
@@ -382,7 +402,16 @@ function dealData(data, dataLength){
 	var min = Math.min.apply(null, normalData);
 	// calcMost();
 	var center = calcCenter(normalData, normalCount);
-	plotChart(avg, max, min, center, eData, count);
+
+	var analysisTable = "";
+	if(domId == "container1") {
+		analysisTable = 'analysis-table1';
+	} else if(domId == "container2"){
+		analysisTable = 'analysis-table2';
+	} else{
+		analysisTable = 'analysis-table3'
+	}
+	plotChart(analysisTable, avg, max, min, center, eData, count);
 }
 
 
@@ -403,9 +432,13 @@ function calcAvg(normalData, normalCount){
 	return sum/normalCount;
 }
 
-function plotChart(avg, max, min, center, eData, count){
+function plotChart(analysisTable, avg, max, min, center, eData, count){
+	if($("#"+analysisTable)) {
+		$("#"+analysisTable).remove();
+	}
 	var html = "";
-	html += "<div style='height: 80px'></div>";
+	html += "<div id=" + analysisTable + ">";
+	html += "<div id=" + analysisTable + " style='height: 80px'></div>";
 	html += "<div style='height: 320px'> <table class='table'> <tbody>";
 	html += "<tr><td>平均数</td>";
 	html += "<td>"+avg+"</td></tr>";
@@ -427,7 +460,7 @@ function plotChart(avg, max, min, center, eData, count){
 	html +="</td>";
 	html += "</tr>";
 	
-	html += "</tbody> </table> </div>";
+	html += "</tbody> </table> </div></div>";
 	$('#analysis-data').append(html);
 }
 </script>
