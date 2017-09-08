@@ -9,86 +9,95 @@ echo <<<EOT
 -->
 
 <div class="col-md-8">
-	<div class="col-md-9">
-	<form role="form" action="{$urlUserdata}a=dogroupopera&action=create" method="POST">
-		<div class="form-group" id="test">
-			
-			<label for="exampleInputEmail1">
-				设备名称
-			</label>
-			<input type="text" name="groupName">
-		<!--</div>
-		// <div class="form-group">-->
-			
-			<label>
-				&nbsp;&nbsp;&nbsp;&nbsp;开始日期
-			</label>
-			<input type="" name="loginPassword"/>
-			<label>
-				&nbsp;&nbsp;&nbsp;&nbsp;结束日期
-			</label>
-			<input type="password" name="loginPassword"/>
-			<!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<img src="{$imgAdd}" />-->
-		</div>
-		<div class="form-group">
-		
-		<label for="exampleInputEmail1">
-			设备名称
-			</label>
-			<input type="text" name="groupName">
-		<!--</div>
-		// <div class="form-group">-->
-			
-			<label>
-				&nbsp;&nbsp;&nbsp;&nbsp;开始日期
-			</label>
-			<input type="" name="loginPassword"/>
-			<label>
-				&nbsp;&nbsp;&nbsp;&nbsp;结束日期
-			</label>
-			<input type="password" name="loginPassword"/>
-			<!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<img src="{$imgAdd}" />-->
-		</div>
+	<div class="row">
+		<div class="col-md-8">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="row">
+						<form role="form" action="{$urlUserdata}a=dogroupopera&action=create" method="POST">
 
-		<div class="form-group">
-		
-			<label for="exampleInputEmail1">
-				设备名称
-			</label>
-			<input type="text" name="groupName">
-		<!--</div>
-		// <div class="form-group">-->
-			
-			<label>
-				&nbsp;&nbsp;&nbsp;&nbsp;开始日期
-			</label>
-			<input type="" name="loginPassword"/>
-			<label>
-				&nbsp;&nbsp;&nbsp;&nbsp;结束日期
-			</label>
-			<input type="password" name="loginPassword"/>
-			<!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<img src="{$imgAdd}" />-->
+							<div class="col-md-4">
+								<div class="row">
+									<div class="form-group">
+										
+										<label for="exampleInputEmail1">
+											设备名称
+										</label>
+										<input type="text" name="groupName" class="form-control">
+										
+										<label>
+											开始日期
+										</label>
+										<input type="" name="loginPassword" class="form-control"/>
+										<label>
+											结束日期
+										</label>
+										<input type="password" name="loginPassword" class="form-control"/>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="row">
+									<div class="form-group">
+									
+									<label for="exampleInputEmail1">
+										设备名称
+										</label>
+										<input type="text" name="groupName" class="form-control">
+
+										<label>
+											开始日期
+										</label>
+										<input type="" name="loginPassword" class="form-control"/>
+										<label>
+											结束日期
+										</label>
+										<input type="password" name="loginPassword" class="form-control"/>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="row">
+									<div class="form-group">
+									
+										<label for="exampleInputEmail1">
+											设备名称
+										</label>
+										<input type="text" name="groupName" class="form-control">			
+										<label>
+											开始日期
+										</label>
+										<input type="" name="loginPassword" class="form-control"/>
+										<label>
+											结束日期
+										</label>
+										<input type="password" name="loginPassword" class="form-control"/>
+									</div>
+								</div>
+							</div>
+
+							<button type="submit" class="btn btn-success form-control" style="width:82.5%">
+								开始分析
+							</button>
+						</form>
+						<div>
+							<div style="height: 20px"></div>
+							<div id="container" style="height: 400px"></div>
+							<div id="container1" style="height: 400px"></div>
+							<div id="container2" style="height: 400px"></div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
 		</div>
-
-		<button type="submit" class="btn btn-success form-control" style="width:82.5%">
-			开始分析
-		</button>
-	</form>
-
-	<div style="height: 20px"></div>
-	<div id="container" style="height: 400px"></div>
-	<div id="container1" style="height: 400px"></div>
-	<div id="container2" style="height: 400px"></div>
+		<div class="col-md-4">
+			<div style="height: 250px"></div>
+			<div id="analysis-data"></div><!-- analysis-data -->
+		</div><!-- col-md-3 -->
 	</div>
-	<div class="col-md-3">
-		<div style="height: 200px"></div>
-		<div id="analysis-data">
-			
-		</div><!-- analysis-data -->
-  	</div><!-- col-md-3 -->
 </div><!-- col-md-8 1+2+8(9+3)+1 -->
 
 <div class="col-md-1">

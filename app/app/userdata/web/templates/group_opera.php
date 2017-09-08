@@ -85,7 +85,7 @@ echo <<<EOT
 
 		<div class="col-md-3">
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-12">·
 					<h2>
 						创建设备组
 					</h2>
