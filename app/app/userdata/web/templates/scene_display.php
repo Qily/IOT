@@ -9,13 +9,6 @@ $loginId = get_met_cookie('metinfo_member_id');
 $scenes = DB::get_all("select * from {$_M[table]['userdata_scene']} where create_man_id = '{$loginId}' ORDER BY id ASC");
 $obj->_data = $scenes;
 $scenes_json = json_encode($obj);
-
-$bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
-$jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
-$scripts_js = $_M[url][own]."web/templates/js/scripts.js";
-
-$imgScene = $_M[url][own]."img/scene.png";
-
 echo <<<EOT
 -->
 

@@ -3,13 +3,6 @@ defined('IN_MET') or exit('No permission');//保持入口文件，每个应用�
 
 $title = '设备信息';
 require_once $this->template('own/header');
-
-
-$bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
-$jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
-$scripts_js = $_M[url][own]."web/templates/js/scripts.js";
-
-
 echo <<<EOT
 -->
 

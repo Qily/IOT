@@ -1,10 +1,6 @@
 <?php
 defined('IN_MET') or exit('No permission');//所有文件都是已这句话开头，保证系统单入口。
-
 header('content-type:text/html charset:utf-8');
-
-
-
 
 $output = "";
 $upfile = load::sys_class('upfile', 'new');//加载上传类

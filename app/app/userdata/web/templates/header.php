@@ -17,16 +17,21 @@ $imgAddSensor = $_M[url][own]."img/addSensor.png";
 $imgSceneSet = $_M[url][own]."img/sceneset.png";
 $imgSceneDisplay = $_M[url][own]."img/scenedisplay.png";
 $imgAdd = $_M[url][own]."img/add.png";
+$addImg = $_M[url][own]."web/templates/files/addImg.png";
+$imgScene = $_M[url][own]."img/scene.png";
 
 $data_analysis_page = $_M[url][own]."web/templates/data_analysis.php";
 $group_opera = "http://ttggcc.get.vip/data/group_opera.php";
 $devices_page= "http://ttggcc.get.vip/data/index.php";
 $bootstrap_min_css = $_M[url][own]."web/templates/css/bootstrap.min.css";
 $style_css = $_M[url][own]."web/templates/css/style.css";
+$jquery_datetimepicker_css = $_M[url][own]."web/templates/css/jquery.datetimepicker.css";
 
-$bootstrap_min_js = $_M[url][own]."web/templates/css/bootstrap.min.js";
-$jquery_min_js = $_M[url][own]."web/templates/css/jquery.min.js";
-$scripts_js = $_M[url][own]."web/templates/css/scripts.js";
+$bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
+$jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
+$scripts_js = $_M[url][own]."web/templates/js/scripts.js";
+$jquery_datetimepicker_full_min_js = $_M[url][own]."web/templates/js/jquery.datetimepicker.full.min.js";
+$easydrag = $_M[url][own]."web/templates/js/jquery.easyDrag.js";
 
 
 
@@ -46,7 +51,8 @@ echo <<<EOT
     <title>{$title}</title>
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 	<link href="{$bootstrap_min_css}" rel="stylesheet"> 
-    <link href="{$style_css}" rel="stylesheet">
+	<link href="{$style_css}" rel="stylesheet">
+	<link href="{$jquery_datetimepicker_css}" rel="stylesheet">
 </head>
 <body>
 

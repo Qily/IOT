@@ -21,13 +21,6 @@ for($i = 0; $i < $sensors_count; ++$i){
 		$data[$i] = $imgtemper;
 	} 
 }
-
-$bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
-$jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
-$scripts_js = $_M[url][own]."web/templates/js/scripts.js";
-
-$urlUserdata = $_M['url'][site]."data/request_page.php?n=userdata&c=userdata&";
-
 echo <<<EOT
 -->
 

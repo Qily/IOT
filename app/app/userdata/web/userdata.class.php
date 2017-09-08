@@ -292,6 +292,23 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 $json_data = json_encode($dataHist);
                 echo($json_data);
                 break;
+            case 'getSensorsByLoginId':
+                $loginId = get_met_cookie('metinfo_member_id');
+                //找登录用户对应的组
+                $user_groups = DB::get_all("select * from {$_M[table]['userdata_group_user']} where user_id = '{$loginId}'");
+                $sensors = array();
+                for($i = 0; $i < count($user_groups); $i++){
+                    //通过组找对应的传感器
+                    $sensorSingleGroup = DB::get_all("select * from {$_M[table]['userdata_sensor']} where groupId = '{$user_groups[$i]['group_id']}' ORDER BY id ASC");
+                    if($sensorSingleGroup != null){
+                    $sensors = array_merge($sensors, $sensorSingleGroup);
+                    }
+                }
+                $obj->_count = count($sensors);
+                $obj->_data = $sensors;
+                $json_data = json_encode($obj);
+                echo($json_data);
+                break;
             default:
                 break;
         }

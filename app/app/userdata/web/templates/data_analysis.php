@@ -4,7 +4,6 @@ defined('IN_MET') or exit('No permission');//保持入口文件，每个应用�
 $title = '数据分析';
 require_once $this->template('own/header');
 
-$jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
 echo <<<EOT
 -->
 
@@ -18,67 +17,80 @@ echo <<<EOT
 
 							<div class="col-md-4">
 								<div class="row">
-									<div class="form-group">
+									<div class="form-group" style="background-color:#CBA">
 										
 										<label for="exampleInputEmail1">
 											设备名称
 										</label>
-										<input type="text" name="groupName" class="form-control">
+										<div class="controls">
+											<select class="form-control" name="sensorType">
+												
+											</select>
+										</div>
 										
 										<label>
 											开始日期
 										</label>
-										<input type="" name="loginPassword" class="form-control"/>
+										<input type="text" name="loginPassword" class="form-control calender"/>
 										<label>
 											结束日期
 										</label>
-										<input type="password" name="loginPassword" class="form-control"/>
+										<input type="text" name="loginPassword" class="form-control calender"/>
 									</div>
 								</div>
 							</div>
 
 							<div class="col-md-4">
 								<div class="row">
-									<div class="form-group">
+									<div class="form-group" style="background-color:#ABC">
 									
 									<label for="exampleInputEmail1">
 										设备名称
 										</label>
-										<input type="text" name="groupName" class="form-control">
+										<div class="controls">
+											<select class="form-control" name="sensorType">
+												
+											</select>
+										</div>
 
 										<label>
 											开始日期
 										</label>
-										<input type="" name="loginPassword" class="form-control"/>
+										<input type="text" name="loginPassword" class="form-control calender"/>
 										<label>
 											结束日期
 										</label>
-										<input type="password" name="loginPassword" class="form-control"/>
+										<input type="text" name="loginPassword" class="form-control calender"/>
 									</div>
 								</div>
 							</div>
 
 							<div class="col-md-4">
 								<div class="row">
-									<div class="form-group">
+									<div class="form-group" style="background-color:#999999">
 									
 										<label for="exampleInputEmail1">
 											设备名称
 										</label>
-										<input type="text" name="groupName" class="form-control">			
+										<div class="controls">
+											<select class="form-control" name="sensorType">
+												
+											</select>
+										</div>		
+
 										<label>
 											开始日期
 										</label>
-										<input type="" name="loginPassword" class="form-control"/>
+										<input type="text" name="loginPassword" class="form-control calender"/>
 										<label>
 											结束日期
 										</label>
-										<input type="password" name="loginPassword" class="form-control"/>
+										<input type="text" name="loginPassword" class="form-control calender"/>
 									</div>
 								</div>
 							</div>
 
-							<button type="submit" class="btn btn-success form-control" style="width:82.5%">
+							<button type="submit" class="btn btn-primary form-control" >
 								开始分析
 							</button>
 						</form>
@@ -104,14 +116,49 @@ echo <<<EOT
 </div>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
 
-<script src="{$jquery_min_js}"></script>
+
+
 <script type="text/javascript">
 window.onload = function(){
+	loadSelectList();
+
 	var domId = "container";
 	getHistData(domId);
 	var domId1 = "container1";
 	getHistData(domId1);
+
+	$(".calender").datetimepicker({
+		//value:'2017-09-08 10:54',
+		format:'Y-m-d H:i:s',
+		minDate:'2017/08/01',
+		step:20
+	});
 	
+	
+}
+
+
+function loadSelectList(){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getSensorsByLoginId',
+		type:'POST',
+		dataType:'json',
+
+		success:function(data){
+			//alert(data);
+			//通过传回来的传感器参数获得对应的sensorName
+			//将sensorName放到select中
+			var html="";
+			for(var i = 0; i < data._count; i++){
+				html += "<option>"+ data._data[i].sensorName +"</option>"
+			}
+			$("select").append(html);
+			
+		},
+		error:function(){
+
+		}
+	});
 }
 
 function getHistData(domId){
@@ -384,7 +431,8 @@ function plotChart(avg, max, min, center, eData, count){
 	$('#analysis-data').append(html);
 }
 </script>
-
+<script src="{$jquery_min_js}"></script>
+<script src="{$jquery_datetimepicker_full_min_js}"></script>
 <!--
 require_once $this->template('own/footer');
 EOT;

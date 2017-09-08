@@ -22,18 +22,6 @@ $sensors_count = count($sensors);
 $obj -> _data = $sensors;
 $obj -> _sensorsCount = $sensors_count;
 $json_data = json_encode($obj);
-
-
-$bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
-$jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
-$jquery_min_js_1_6 = $_M[url][own]."web/templates/js/jquery-1.6.2.min.js";
-$scripts_js = $_M[url][own]."web/templates/js/scripts.js";
-$addImg = $_M[url][own]."web/templates/files/addImg.png";
-$easydrag = $_M[url][own]."web/templates/js/jquery.easyDrag.js";
-
-
-
-
 echo <<<EOT
 -->
 <div class="col-md-8">
@@ -68,7 +56,6 @@ echo <<<EOT
 </div>
 
 <script src="{$jquery_min_js}"></script>
-<script src="{$jquery_min_js_1_6}"></script>
 <script src="{$easydrag}"></script>
 <script src="{$bootstrap_min_js}"></script>
 <script src="{$scripts_js}"></script>
