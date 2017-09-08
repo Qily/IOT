@@ -287,7 +287,7 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 
                 $start_time = $_M[form]['startTime'];
                 $end_time = $_M[form]['endTime'];
-                $limit = 100;
+                $limit = 200;
                 $dataHist = $this->sensOper->getHistData($device_id, $datastream_id, $start_time,$end_time, $limit);
 
                 //print_r($datastream['count']);
@@ -300,6 +300,22 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
 
                 $json_data = json_encode($dataHist);
                 echo($json_data);
+                break;
+            case 'getLastData':
+                $sensorData = DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE sensorName = '{$_M['form']['sensorName']}'");
+                $device_id = $sensorData['deviceId'];
+
+                if($sensorData['tag'] == 'humi'){
+                    $datastream_id = "humidity_data_flow";
+                } else{
+                    $datastream_id = "temperature_data_flow";
+                }
+                
+                $dataHist = $this->sensOper->getLastDatapoint($device_id, $datastream_id);
+
+                $json_data = json_encode($dataHist);
+                echo($json_data);
+                // echo(100);
                 break;
             case 'getSensorsByLoginId':
                 $loginId = get_met_cookie('metinfo_member_id');

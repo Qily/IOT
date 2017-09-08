@@ -345,7 +345,7 @@ function plot_static(datastream, domId){
 
 
 function dealData(domId, data, dataLength){
-	var step = 3;//阈值
+	var step = 5;//阈值
 	var count = 0; //表示异常数据的个数
 	var eData = new Array();
 	var normalData = new Array();

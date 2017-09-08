@@ -54,12 +54,12 @@ Class SensorOperation{
 	}
 
 
-	public function getLastDatapoint(){
-		$device_id = "10828595";
-		$datastream_id = "humidity_data_flow";
+	public function getLastDatapoint($device_id, $datastream_id){
+		// $device_id = "10828595";
+		// $datastream_id = "humidity_data_flow";
 		date_default_timezone_set("Asia/Shanghai");
 		$end_time = date("y-m-d H:i:s");
-		$datastream = $this->getApi()->datapoint_get($device_id, $datastream_id, null, $end_time);
+		$datastream = $this->getApi()->datapoint_get($device_id, $datastream_id, null, $end_time, 1);
 
 		$error_code = 0;
         $error = '';

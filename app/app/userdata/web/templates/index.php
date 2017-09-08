@@ -119,13 +119,57 @@ function TrOnClick() {
 
 
 $(document).ready(function(){
-  $("#p1").hide();
-
+	$("#p1").hide();
+	//$("#SIM900A_Test").text(100);
+	getSensors();
+	setInterval("getSensors()",5000);
 });
 
+
+function getSensors(){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getSensorsByLoginId',
+		type:'POST',
+		dataType:'json',
+		//cache:true,
+		//data:{sensorName:sensorName, startTime:startTime, endTime:endTime},
+		success:function(data){
+			//先找出所有的传感器
+			//通过名称将传感器和td的Id联系，从而更新数据
+			for(var i = 0; i < data._count; i++){
+				getLastData(data._data[i].sensorName);
+			}
+
+		},
+		error:function(){
+			alert('获取历史');
+		}
+	});
+}
+
+function getLastData(sensorName){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getLastData',
+		type:'POST',
+		dataType:'json',
+		data:{sensorName:sensorName},
+		success:function(data){
+			//先找出所有的传感器
+			//通过名称将传感器和td的Id联系，从而更新数据
+
+			$("#"+sensorName).text(data.datastreams[0].datapoints[0].value);
+			//alert(data.datastreams[0].datapoints[0].value);
+
+		},
+		error:function(){
+			alert('获取历史数据错误');
+		}
+	});
+}
+
 function showUp(id){
-  $("#upId").val(id);
-  $("#p1").show();
+	$("#upId").val(id);
+	$("#p1").show();
 }
 
 
@@ -150,6 +194,7 @@ function showUp(id){
 						<tr>
 							<th></th>
 							<th>名称</th>
+							<th>当前值</th>
 							<th>位置</th>
 							<th>操作</th>
 					</thead>
@@ -163,10 +208,11 @@ echo <<<EOT
 						<tr>
 						
 							<td><img src={$data[$i]} /></td>
-							<td>{$sensors[$i]['sensorName']}</td>
-							<!--<td>{$sensors[$i]['tag']}</td>-->
+							<td class="value">{$sensors[$i]['sensorName']}</td>
+
+							<td><div id={$sensors[$i]['sensorName']}>1</div></td>
 							<td>{$sensors[$i]['sensorLoca']}</td>
-						 <td><a class="btn btn-warning" onclick="showUp({$sensors[$i]['id']})">修改</a>
+						 	<td><a class="btn btn-warning" onclick="showUp({$sensors[$i]['id']})">修改</a>
 								 <a class="btn btn-danger"  href="javascript:if(confirm('确定删除？'))location='{$urlUserdata}a=doindex&action=del&id={$sensors[$i]['id']}'">删除</a><td>
 						</tr>
 						
