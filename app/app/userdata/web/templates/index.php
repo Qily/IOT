@@ -210,7 +210,7 @@ echo <<<EOT
 							<td><img src={$data[$i]} /></td>
 							<td class="value">{$sensors[$i]['sensorName']}</td>
 
-							<td><div id={$sensors[$i]['sensorName']}>1</div></td>
+							<td><div id={$sensors[$i]['sensorName']}>0</div></td>
 							<td>{$sensors[$i]['sensorLoca']}</td>
 						 	<td><a class="btn btn-warning" onclick="showUp({$sensors[$i]['id']})">修改</a>
 								 <a class="btn btn-danger"  href="javascript:if(confirm('确定删除？'))location='{$urlUserdata}a=doindex&action=del&id={$sensors[$i]['id']}'">删除</a><td>

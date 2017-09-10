@@ -47,6 +47,7 @@ $(document).ready(function (){
 	//加载第一个场景
 	loadScene(0);
 	//加载场景对应的传感器
+	setInterval("getSensors()",2000);
 
 });
 
@@ -67,6 +68,10 @@ function loadScene(index){
 	//然后通过场景号找出对应的传感器id，name,rela_width, rela_height,
 	//实现场景的再现
 	loadSensors(imgPath);
+
+	loadSensorsVal();
+
+
 }
 
 function loadSensors(imgPath){
@@ -86,22 +91,25 @@ function loadSensors(imgPath){
 
 function getAllSensors(sceneId){
 	$("#scene").children(".sensors").remove();
-	
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=getAllSensors&sceneId='+sceneId,
 		dataType:'json',
 		type:'POST',
+		async:false,
 		success:function(data){
 			//alert(data._data[0].id);
-			for(var i = 0; i < data._count; i++){
+			var i = 0
+			for(i = 0; i < data._count; i++){
 				getSensorById(data._data[i].sensor_id, i, data._data[i].rela_width, data._data[i].rela_height);
 			}
+			var htmlCount = "<div hidden='true' id='sensors-count'>"+i+"</div>";
+			$("#scenes-list").append(htmlCount);
 			
 		},
 		error:function(){
 			alert("获取场景对应的传感器出错！");
 		}
-	});
+	}).responseText;
 }
 
 function getSensorById(sensorId, index, relaWidth, relaHeight){
@@ -123,22 +131,54 @@ function getSensorById(sensorId, index, relaWidth, relaHeight){
 			// var stop = $("#scene-child").offset().top + $("#scene-child").height() * relaHeight;
 			var sleft = $("#scene-child").width() * relaWidth;
 			var stop = $("#scene-child").height() * relaHeight;
-			html = "<div class='sensors' id=sensor-in-scene"+ index +"><img src="+ sensorIcon +" />"+ data.name +"</div>";
-			//alert(html);
-			//计算坐标绝对值
-			
-			//alert(sleft +"***"+stop)
-			//alert($("#scene-child").width() *relaWidth);
-
-			//alert(html);
+			html += "<div class='sensors' id=sensor-in-scene"+ index +"><img src="+ sensorIcon +" />"+ data.name +"</div>";
+			var html1 = "<div id=sensor-in-scene-val"+index+">val:0</div>";
+			// alert(html);
 			$('#scene').append(html);
-			//alert($("#sensor-in-scene0").text());
+			$("#sensor-in-scene"+index).append(html1);
+			//$('#scene').append(html1);
 			$("#sensor-in-scene"+index).css({'position':'absolute', 'left':sleft+'px', 'top':stop+'px'});
+			//$("#sensor-in-scene-val"+index).css({'position':'absolute', 'left':sleft+'px', 'top':stop+'px'});
 		},
 		error:function(){
-
+			alert("获取单个设备信息出错！");
 		}
 	}).responseText;
+}
+
+
+
+//setInterval("getSensors()",5000);
+
+
+function getSensors(){
+	var sensorInSceneId="";
+	var sensorName = "";
+	for(var i = 0; i < $("#sensors-count").text(); i++){
+		sensorName = $("#sensor-in-scene"+i).text().split("val:",1);
+		//alert(sensorName);
+		sensorInSceneId = "sensor-in-scene-val"+i;
+		//getLastData(sensorName, sensorInSceneId);
+	}
+}
+
+function getLastData(sensorName, sensorInSceneId){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getLastData',
+		type:'POST',
+		dataType:'json',
+		data:{sensorName:sensorName},
+		success:function(data){
+			//先找出所有的传感器
+			//通过名称将传感器和td的Id联系，从而更新数据
+
+			$("#"+sensorInSceneId).text("val:"+data.datastreams[0].datapoints[0].value);
+		},
+		error:function(){
+			alert('获取历史数据错误');
+			return;
+		}
+	});
 }
 
 </script>
