@@ -6,7 +6,6 @@ require_once $this->template('own/header');
 echo <<<EOT
 -->
 
-
 <div class="col-md-8">
 	<div class="col-md-7">
                         <table class="table">
@@ -143,9 +142,22 @@ echo <<<EOT
 <div class="col-md-1"></div>
 </div>
 
+<script src="{$bootstrip_min_js}"></script>
 <script src="{$jquery_min_js}"></script>
-<script src="{$bootstrap_min_js}"></script>
 <script src="{$scripts_js}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	init();
+});
+
+function init(){
+	var height = $('#top-img').height()/2;
+	var myHeight = height-24;
+	logoHeight = height/2;
+	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
+	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
+}
+</script>
 <!--
 require_once $this->template('own/footer');
 EOT;

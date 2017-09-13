@@ -67,8 +67,16 @@ $(document).ready(function(){
 	sensorList(sensorsListData);
 	//上传图片相关设置
 	uploadImg();
+	init();
 });
 
+function init(){
+	var height = $('#top-img').height()/2;
+	var myHeight = height-24;
+	logoHeight = height/2;
+	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
+	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
+}
 
 function uploadImg(){
 	$("#inputfile").change(function(){
@@ -151,7 +159,8 @@ function getSceneIdByName(name){
 		success:function(data){
 			saveSensors(data);
 			alert("保存场景成功！")
-
+			
+			location.href="{$urlUserdata}a=doscenedisplay";
 		},
 		error:function(){
 			alert("保存失败，请重新尝试...");
@@ -159,6 +168,7 @@ function getSceneIdByName(name){
 	});
 	
 }
+
 function saveImg(name, imgPath){
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=saveImg',

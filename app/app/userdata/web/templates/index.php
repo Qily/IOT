@@ -16,6 +16,7 @@ for($i = 0; $i < count($user_groups); $i++){
 $sensors_count = count($sensors);
 $sensors_json = json_encode($sensors);
 
+
 $data = array();
 for($i = 0; $i < $sensors_count; ++$i){
 	if($sensors[$i]['tag'] == 'humi'){
@@ -29,11 +30,10 @@ echo <<<EOT
 
 	
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
 <script type="text/javascript">
-
 var sensors_json = {$sensors_json};
-
-
 function load() {
 	function createApp(dom, id, is_model, device_id) {
 		var width = dom.clientWidth;
@@ -119,12 +119,20 @@ function TrOnClick() {
 
 
 $(document).ready(function(){
+	init();
 	$("#p1").hide();
-	//$("#SIM900A_Test").text(100);
 	getSensors();
 	setInterval("getSensors()",5000);
 });
 
+
+function init(){
+	var height = $('#top-img').height()/2;
+	var myHeight = height-24;
+	logoHeight = height/2;
+	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
+	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
+}
 
 function getSensors(){
 	$.ajax({
@@ -142,7 +150,7 @@ function getSensors(){
 
 		},
 		error:function(){
-			alert('获取历史');
+			//alert('获取历史数据失败');
 		}
 	});
 }
@@ -162,7 +170,7 @@ function getLastData(sensorName){
 
 		},
 		error:function(){
-			alert('获取历史数据错误');
+			//alert('获取历史数据错误');
 		}
 	});
 }
@@ -242,6 +250,8 @@ echo <<<EOT
 <script src="{$jquery_min_js}"></script>
 <script src="{$bootstrap_min_js}"></script>
 <script src="{$scripts_js}"></script>
+
+
 <!--
 require_once $this->template('own/footer');
 EOT;

@@ -19,6 +19,8 @@ $imgSceneDisplay = $_M[url][own]."img/scenedisplay.png";
 $imgAdd = $_M[url][own]."img/add.png";
 $addImg = $_M[url][own]."web/templates/files/addImg.png";
 $imgScene = $_M[url][own]."img/scene.png";
+$imgUser = $_M[url][own]."img/user.png";
+$imgLogo = $_M[url][own]."img/logo.png";
 
 $data_analysis_page = $_M[url][own]."web/templates/data_analysis.php";
 $group_opera = "http://ttggcc.get.vip/data/group_opera.php";
@@ -33,9 +35,8 @@ $scripts_js = $_M[url][own]."web/templates/js/scripts.js";
 $jquery_datetimepicker_full_min_js = $_M[url][own]."web/templates/js/jquery.datetimepicker.full.min.js";
 $easydrag = $_M[url][own]."web/templates/js/jquery.easyDrag.js";
 
-
-
 $urlUserdata = $_M['url'][site]."data/request_page.php?n=userdata&c=userdata&";
+$urlUser = $_M['url'][site]."member";
 
 echo <<<EOT
 -->
@@ -53,13 +54,16 @@ echo <<<EOT
 	<link href="{$bootstrap_min_css}" rel="stylesheet"> 
 	<link href="{$style_css}" rel="stylesheet">
 	<link href="{$jquery_datetimepicker_css}" rel="stylesheet">
+	
 </head>
 <body>
-
-	
 	<div class="container-fluid">
 		<div class="row">
-		<img alt="Top Image" src="{$imgTop}" style="width:100%">
+		<img id='top-img' alt="Top Image" src="{$imgTop}" style="width:100%">
+		<a class="col-md-offset-10" style="color:#0359fe" id="login-user" href="{$urlUser}"><img src="{$imgUser}"/>个人中心</a>
+		<a href="{$_M[url][site]}"><img class="col-md-offset-1" id="logo" src="{$imgLogo}"/></a>
+		</img>
+		
 		<div class="col-md-12" style="height:50px"></div>
 		</div>
 		<div class="row">
@@ -80,7 +84,7 @@ echo <<<EOT
                     <li><a href="{$urlUserdata}a=doexception"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
 					<li><a href="{$urlUserdata}a=doanalysis"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
 
-                    <li><a href="{$urlUserdata}a=dosceneset"><img src="{$imgSceneSet}"/>&nbsp;&nbsp场景设置</a><li>
+                    
 
                     <li><a href="{$urlUserdata}a=doscenedisplay"><img src="{$imgSceneDisplay}"/>&nbsp;&nbsp场景展示</a><li>
 				</ul>

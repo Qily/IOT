@@ -97,6 +97,7 @@ echo <<<EOT
 
 <script type="text/javascript">
 window.onload = function(){
+	init();
 	loadSelectList();
 	$.datetimepicker.setLocale('ch');
 	$(".calender").datetimepicker({
@@ -105,6 +106,14 @@ window.onload = function(){
 		minDate:'2017/08/01',
 		step:20
 	});
+}
+
+function init(){
+	var height = $('#top-img').height()/2;
+	var myHeight = height-24;
+	logoHeight = height/2;
+	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
+	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
 }
 
 function plotAllCharts(){

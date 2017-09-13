@@ -22,7 +22,9 @@ echo <<<EOT
 			<img id="scene-child"/>
 		</div>					
 		<div class="col-md-2" id = "scenes-list">
-
+			<input type = "button" class = "btn btn-success col-md-12" value="新建场景" name="save-scene-set" onclick='createScene()'/>
+			<input type = "button" class = "btn btn-warning col-md-6" value="修改场景" name="save-scene-set" onclick='createScene()'/>
+			<a class = "btn btn-danger col-md-6" href="javascript:if(confirm('确定删除？'))location='{$urlUserdata}a=dosceneset'">删除场景</a>
 		</div>
 	</div>
 </div>
@@ -37,6 +39,7 @@ echo <<<EOT
 <script src="{$scripts_js}"></script>
 <script >
 $(document).ready(function (){
+	init();
 	//加载场景列表
 	var html = "";
 	for(var i = 0; i < $scenes_json._data.length; i++){
@@ -50,6 +53,17 @@ $(document).ready(function (){
 	setInterval("getSensors()",2000);
 
 });
+function init(){
+	var height = $('#top-img').height()/2;
+	var myHeight = height-24;
+	logoHeight = height/2;
+	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
+	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
+}
+
+function createScene(){
+	location.href="{$urlUserdata}a=dosceneset";
+}
 
 function loadScene(index){
 	var imgPath = $scenes_json._data[index].img_path;
@@ -68,10 +82,6 @@ function loadScene(index){
 	//然后通过场景号找出对应的传感器id，name,rela_width, rela_height,
 	//实现场景的再现
 	loadSensors(imgPath);
-
-	loadSensorsVal();
-
-
 }
 
 function loadSensors(imgPath){
@@ -91,6 +101,10 @@ function loadSensors(imgPath){
 
 function getAllSensors(sceneId){
 	$("#scene").children(".sensors").remove();
+	$("#scene").children(".sensor-id").remove();
+	if($('#sensors-count')){
+		$('#sensors-count').remove();
+	}
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=getAllSensors&sceneId='+sceneId,
 		dataType:'json',
@@ -114,6 +128,7 @@ function getAllSensors(sceneId){
 
 function getSensorById(sensorId, index, relaWidth, relaHeight){
 	var html = "";
+	
 	var sensorIcon = '{$imgtemper}';
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=getSensorById&sensorId='+sensorId,
@@ -131,9 +146,9 @@ function getSensorById(sensorId, index, relaWidth, relaHeight){
 			// var stop = $("#scene-child").offset().top + $("#scene-child").height() * relaHeight;
 			var sleft = $("#scene-child").width() * relaWidth;
 			var stop = $("#scene-child").height() * relaHeight;
+
 			html += "<div class='sensors' id=sensor-in-scene"+ index +"><img src="+ sensorIcon +" />"+ data.name +"</div>";
-			var html1 = "<div id=sensor-in-scene-val"+index+">val:0</div>";
-			// alert(html);
+			var html1 = "<div class = 'sensor-id' id=sensor-in-scene-val"+index+">val:0</div>";
 			$('#scene').append(html);
 			$("#sensor-in-scene"+index).append(html1);
 			//$('#scene').append(html1);
@@ -146,28 +161,30 @@ function getSensorById(sensorId, index, relaWidth, relaHeight){
 	}).responseText;
 }
 
-
-
-//setInterval("getSensors()",5000);
-
-
 function getSensors(){
 	var sensorInSceneId="";
 	var sensorName = "";
+	//alert($("#sensors-count").text());
 	for(var i = 0; i < $("#sensors-count").text(); i++){
 		sensorName = $("#sensor-in-scene"+i).text().split("val:",1);
-		//alert(sensorName);
+		// alert(sensorName);
 		sensorInSceneId = "sensor-in-scene-val"+i;
-		//getLastData(sensorName, sensorInSceneId);
+		getLastData(sensorName, sensorInSceneId);
+		// alert("#"+sensorInSceneId);
+		
 	}
 }
 
 function getLastData(sensorName, sensorInSceneId){
+	// alert(sensorName);
+	// sensorName = "SIM900A_Test1";
+
 	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=getLastData',
+		url:'{$urlUserdata}a=dogetinfo&action=getLastData&sensorName='+sensorName,
 		type:'POST',
 		dataType:'json',
-		data:{sensorName:sensorName},
+		// data:{sensorName:sensorName},
+		// async:false,
 		success:function(data){
 			//先找出所有的传感器
 			//通过名称将传感器和td的Id联系，从而更新数据
@@ -175,8 +192,8 @@ function getLastData(sensorName, sensorInSceneId){
 			$("#"+sensorInSceneId).text("val:"+data.datastreams[0].datapoints[0].value);
 		},
 		error:function(){
-			alert('获取历史数据错误');
-			return;
+			//alert('获取历史数据错误');
+			//return;
 		}
 	});
 }
