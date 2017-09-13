@@ -51,10 +51,6 @@ echo <<<EOT
 								
 <div class="col-md-1"></div>
 
-
-</div>
-</div>
-
 <script src="{$jquery_min_js}"></script>
 <script src="{$easydrag}"></script>
 <script src="{$bootstrap_min_js}"></script>
@@ -67,16 +63,8 @@ $(document).ready(function(){
 	sensorList(sensorsListData);
 	//上传图片相关设置
 	uploadImg();
-	init();
 });
 
-function init(){
-	var height = $('#top-img').height()/2;
-	var myHeight = height-24;
-	logoHeight = height/2;
-	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
-	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
-}
 
 function uploadImg(){
 	$("#inputfile").change(function(){
@@ -152,7 +140,7 @@ function getSceneIdByName(name){
 	//var sceneName = name;
 	$.ajax({
 		url:'{$urlUserdata}a=dogetinfo&action=getSceneId',
-		type:'POST',
+		type:'POST',	
 		//dataType:'json',
 		data:{name:name},
 		//async:false,
@@ -239,6 +227,6 @@ function saveToDB(data, sceneId, relaWidth, relaHeight){
 }
 </script>
 <!--
-require_once $this->template('own/footer');
 EOT;
+require_once $this->template('own/footer');
 ?>

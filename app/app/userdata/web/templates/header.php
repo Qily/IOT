@@ -21,6 +21,7 @@ $addImg = $_M[url][own]."web/templates/files/addImg.png";
 $imgScene = $_M[url][own]."img/scene.png";
 $imgUser = $_M[url][own]."img/user.png";
 $imgLogo = $_M[url][own]."img/logo.png";
+$imgBottom = $_M[url][own]."img/bottom.png";
 
 $data_analysis_page = $_M[url][own]."web/templates/data_analysis.php";
 $group_opera = "http://ttggcc.get.vip/data/group_opera.php";
@@ -54,22 +55,55 @@ echo <<<EOT
 	<link href="{$bootstrap_min_css}" rel="stylesheet"> 
 	<link href="{$style_css}" rel="stylesheet">
 	<link href="{$jquery_datetimepicker_css}" rel="stylesheet">
-	
+
+	<style type="text/css">
+		#logo
+		{
+			position:absolute;
+			top:10px
+		}
+		#login-user
+		{
+			position:absolute;
+			top:20px
+		}
+		#copyright
+		{
+			position:relative;
+			top:180px
+		}
+		.superlink:hover{
+			cursor:pointer;
+		}
+
+	</style>
 </head>
 <body>
+
+	<script type="text/javascript">
+		function toPersonalInfo(){
+			location.href = '{$urlUser}';
+		}
+	</script>
+
 	<div class="container-fluid">
 		<div class="row">
 		<img id='top-img' alt="Top Image" src="{$imgTop}" style="width:100%">
-		<a class="col-md-offset-10" style="color:#0359fe" id="login-user" href="{$urlUser}"><img src="{$imgUser}"/>个人中心</a>
-		<a href="{$_M[url][site]}"><img class="col-md-offset-1" id="logo" src="{$imgLogo}"/></a>
-		</img>
+
+		<div class="col-md-offset-10 superlink" id="login-user" style="color:#6B8E23" onclick="toPersonalInfo()">
+			<table>
+				<td><img class="navbar-brand" src="{$imgUser}"/></td>
+				<td><h4>&nbsp;&nbsp;个人中心</h4></td>
+			</table>
+		</div>
+		<a class="superlink" href="{$_M[url][site]}"><img class="col-md-offset-1" id="logo" src="{$imgLogo}"/>
+		</img></a>
 		
-		<div class="col-md-12" style="height:50px"></div>
 		</div>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-2">
-				<ul class="nav nav-stacked">
+				<ul class="nav nav-sidebar">
 					<li><a href="{$_M[url][site]}"><img src="{$imghome}"/>&nbsp&nbsp返回首页</a></li>
 					
 					<li><a href="{$urlUserdata}a=doindex"><img src="{$imgdevice}"/>&nbsp&nbsp设备列表</a></li>

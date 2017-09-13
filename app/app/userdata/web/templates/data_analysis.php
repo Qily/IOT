@@ -89,15 +89,14 @@ echo <<<EOT
 	</div>
 </div><!-- col-md-8 1+2+8(9+3)+1 -->
 
-<div class="col-md-1">
-</div>
+<div class="col-md-1"></div>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
 
-
+<script src="{$jquery_min_js}"></script>
+<script src="{$jquery_datetimepicker_full_min_js}"></script>
 
 <script type="text/javascript">
-window.onload = function(){
-	init();
+$(document).ready(function(){
 	loadSelectList();
 	$.datetimepicker.setLocale('ch');
 	$(".calender").datetimepicker({
@@ -106,7 +105,7 @@ window.onload = function(){
 		minDate:'2017/08/01',
 		step:20
 	});
-}
+});
 
 function init(){
 	var height = $('#top-img').height()/2;
@@ -473,9 +472,8 @@ function plotChart(analysisTable, avg, max, min, center, eData, count){
 	$('#analysis-data').append(html);
 }
 </script>
-<script src="{$jquery_min_js}"></script>
-<script src="{$jquery_datetimepicker_full_min_js}"></script>
+
 <!--
-require_once $this->template('own/footer');
 EOT;
+require_once $this->template('own/footer');
 ?>

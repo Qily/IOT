@@ -6,9 +6,10 @@ require_once $this->template('own/header');
 echo <<<EOT
 -->
 
+
 <div class="col-md-8">
 	<div class="col-md-7">
-                        <table class="table">
+			<table class="table">
 				<thead>
 					<tr>
 						<th></th>
@@ -42,7 +43,7 @@ for($i = 0; $i < count($canAddGroup); $i++){
       
 echo <<<EOT
 -->
-                                         <tr>
+					<tr>
 						<td>
 							{$order}
 						</td>
@@ -84,13 +85,12 @@ echo <<<EOT
 					
 				</tbody>
 			</table>
-		
-</div>
+		</div>
 							
-<div class="col-md-1"></div>
+		<div class="col-md-1"></div>
 						
-<div class="col-md-4">
-	<form action="{$urlUserdata}a=doaddgroupuser&action=add" method="POST">
+		<div class="col-md-4">
+			<form action="{$urlUserdata}a=doaddgroupuser&action=add" method="POST">
                         <label>当前可以操作的组名有：</label>                              
 <!--
 EOT;
@@ -138,27 +138,14 @@ echo <<<EOT
 		<h3>成员名：</h3>所要添加人的用户名（必填）
 	</p>
 </div>
+</div>
 						
 <div class="col-md-1"></div>
-</div>
 
 <script src="{$bootstrip_min_js}"></script>
 <script src="{$jquery_min_js}"></script>
-<script src="{$scripts_js}"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-	init();
-});
 
-function init(){
-	var height = $('#top-img').height()/2;
-	var myHeight = height-24;
-	logoHeight = height/2;
-	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
-	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
-}
-</script>
 <!--
-require_once $this->template('own/footer');
 EOT;
+require_once $this->template('own/footer');
 ?>

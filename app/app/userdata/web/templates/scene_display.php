@@ -31,15 +31,12 @@ echo <<<EOT
 								
 <div class="col-md-1"></div>
 
-</div>
-</div>
 
 <script src="{$jquery_min_js}"></script>
 <script src="{$bootstrap_min_js}"></script>
 <script src="{$scripts_js}"></script>
 <script >
 $(document).ready(function (){
-	init();
 	//加载场景列表
 	var html = "";
 	for(var i = 0; i < $scenes_json._data.length; i++){
@@ -53,13 +50,6 @@ $(document).ready(function (){
 	setInterval("getSensors()",2000);
 
 });
-function init(){
-	var height = $('#top-img').height()/2;
-	var myHeight = height-24;
-	logoHeight = height/2;
-	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
-	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
-}
 
 function createScene(){
 	location.href="{$urlUserdata}a=dosceneset";
@@ -200,6 +190,6 @@ function getLastData(sensorName, sensorInSceneId){
 
 </script>
 <!--
-require_once $this->template('own/footer');
 EOT;
+require_once $this->template('own/footer');
 ?>

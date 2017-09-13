@@ -91,7 +91,7 @@ window.onload = function IniEvent() {
 	}
 	trs[0].onclick = TrOnClick;
 	
-	trs[0].style.background = "yellow";
+	trs[0].style.background = "skyblue";
 	changeView(sensors_json[0].dataView);
 				
 }
@@ -102,7 +102,7 @@ function TrOnClick() {
 	for (var i = 0; i < trs.length; i++) {
 		
 		if (trs[i] == this) { //判断是不是当前选择的行
-			trs[i].style.background = "yellow";
+			trs[i].style.background = "skyblue";
 			for(var j = 0; j < sensors_json.length; j++){
 				if(trs[i].cells[1].innerHTML == sensors_json[j].sensorName){						
 					changeView(sensors_json[j].dataView);
@@ -119,20 +119,12 @@ function TrOnClick() {
 
 
 $(document).ready(function(){
-	init();
 	$("#p1").hide();
 	getSensors();
 	setInterval("getSensors()",5000);
 });
 
 
-function init(){
-	var height = $('#top-img').height()/2;
-	var myHeight = height-24;
-	logoHeight = height/2;
-	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
-	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
-}
 
 function getSensors(){
 	$.ajax({
@@ -244,15 +236,13 @@ echo <<<EOT
 							
 	<div class="col-md-1"></div>
 
-	</div>
-</div>
-
 <script src="{$jquery_min_js}"></script>
 <script src="{$bootstrap_min_js}"></script>
-<script src="{$scripts_js}"></script>
+
+
 
 
 <!--
-require_once $this->template('own/footer');
 EOT;
+require_once $this->template('own/footer');
 ?>
