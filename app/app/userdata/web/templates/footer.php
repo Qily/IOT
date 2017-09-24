@@ -9,6 +9,22 @@ echo <<<EOT
 </div>
 <img id='bottom-img' src="{$imgBottom}" style="width:100%"/>
 </div>
+<script src="{$jquery_min_js}"></script>
+<script src="{$bootstrap_min_js}"></script>
+<script src="{$easydrag}"></script>
+<script src="{$jquery_datetimepicker_full_min_js}"></script>
+<script src="{$js_share}"></script>
+<script src="{$scripts_js}"></script>
+<script src="{$js_pin}"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$(".pinned").pin();
+	$(".nav").pin();
+
+});
+</script>
 	</body>
 </html>
 <!--

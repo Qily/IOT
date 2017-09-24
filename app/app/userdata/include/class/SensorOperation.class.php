@@ -50,7 +50,6 @@ Class SensorOperation{
         } else {
 			return $datastream;
 		}
-        
 	}
 
 

@@ -4,46 +4,73 @@ defined('IN_MET') or exit('No permission');//保持入口文件，每个应用�
 $title = '设备信息';
 require_once $this->template('own/header');
 
-//在右侧显示可以添加的传感器
-//在数据库中查找当前登陆的用户所在的组对应的传感器
-//在传感器添加完成之后，不能重复添加，因为一个传感器一次只能在一个地方出现
-//DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE id = {$_M[form][id]}")
-//当前登陆用户id
-$loginId = get_met_cookie('metinfo_member_id');
-$user_groups = DB::get_all("select * from {$_M[table]['userdata_group_user']} where user_id = '{$loginId}'");
+//先获得相关的组
+$userGroups = DB::get_all("SELECT id, name FROM {$_M[table]['userdata_group']} WHERE create_man_id = '{$loginId}'");
+//通过组获得相关的device
+$devices = array();
+for($i = 0; $i < count($userGroups); $i++){
+	$singleGroupDevices = DB::get_all("SELECT * FROM {$_M[table]['userdata_device']} WHERE group_id = '{$userGroups[$i]['id']}' ORDER BY id ASC");
+	for($j = 0; $j < count($singleGroupDevices); $j++){
+		//根据设备和onet_id的联系，将onet和device联系起来
+		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$singleGroupDevices[$j]['onet_id']}'");
+		array_push($singleGroupDevices[$j], $userGroups[$i]['id'], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view']);
+	}
+	if($singleGroupDevices != null){
+		// array_push($singleGroupDevices, "a");
+    	$devices = array_merge($devices, $singleGroupDevices);
+	}
+	
+}
+//通过device获得相关的sensor
 $sensors = array();
-for($i = 0; $i < count($user_groups); $i++){
-      $sensorSingleGroup = DB::get_all("select * from {$_M[table]['userdata_sensor']} where groupId = '{$user_groups[$i]['group_id']}' ORDER BY id ASC");
-     if($sensorSingleGroup != null){
-      $sensors = array_merge($sensors, $sensorSingleGroup);
+for($in = 0; $in < count($devices); $in++){
+	
+	$singleDeviceSensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE device_id = '{$devices[$in]['id']}' ORDER BY id ASC");
+
+	for($j = 0; $j < count($singleDeviceSensors); $j++){
+		//通过sensor获得相应的type
+		$type = DB::get_one("SELECT * FROM {$_M[table]['userdata_type']} WHERE id = '{$singleDeviceSensors[$j]['type_id']}'");
+		array_push($singleDeviceSensors[$j], $devices[$in][1], $type['name'], $type['data_flow'], $type['img_path']);
+	}
+
+	if($singleDeviceSensors != null){
+    	$sensors = array_merge($sensors, $singleDeviceSensors);
 	}
 }
-$sensors_count = count($sensors);
-$obj -> _data = $sensors;
-$obj -> _sensorsCount = $sensors_count;
-$json_data = json_encode($obj);
+/*********************************************************************
+ * $devices[$i][0] 设备所在组号
+ * $devices[$i][1] 设备所在组名
+ * $devices[$i][2] 设备的id号
+ * $devices[$i][3] 设备所对应的onet data-view
+ *********************devices*****************************************
+ *********************sensors*****************************************
+ * $sensors[$i][0] 传感器所对应的设备id号 
+ * $sensors[$i][1] 传感器对应的类型名称
+ * $sensors[$i][2] 传感器对应的数据流
+ * $sensors[$i][3] 传感器对应的类型图片路径
+*********************************************************************/
+$json_devices = json_encode($devices);
+$json_sensors = json_encode($sensors);
+
 echo <<<EOT
 -->
 <div class="col-md-8">
 	<div class="col-md-12">
 		<div class="col-md-10">
             <span>
-				<img id="btn-add-img" onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片" src="{$addImg}"><span id="add-img-note">选择一张.jpg图片</span></img>
+				<img id="btn-add-img" onclick="getElementById('inputfile').click()" title="点击添加图片" alt="点击添加图片" src="{$addImg}"><span id="add-img-note">选择一张现场图片(.jpg图片)</span></img>
 				
 			</span>
-			<input type="file" id="inputfile" style="height:0;width:0;z-index: -1; position: absolute;left: 10px;top: 5px;"/>
+			<input type="file" id="inputfile"/>
             <div id="feedback">
             </div>
         </div>
 
 
 
-		<div class="col-md-2">
+		<div class="col-md-2" >
 			<input type = "button" class = "btn btn-success col-md-12" value="保存设置" name="save-scene-set" onclick='saveScene()'/>
-			<h3></h3>
-			<div id="sensors-list">
-				<!--<div id ="div1"><img src="{$imghumi}">传感器</img></div>-->
-			</div>
+			<div id="device-list"></div>
 			
         </div>
 	</div>
@@ -51,16 +78,14 @@ echo <<<EOT
 								
 <div class="col-md-1"></div>
 
-<script src="{$jquery_min_js}"></script>
-<script src="{$easydrag}"></script>
-<script src="{$bootstrap_min_js}"></script>
-<script src="{$scripts_js}"></script>
+
+
 <script type="text/javascript">
+//获取列表数据
+var devices = {$json_devices};
 $(document).ready(function(){
-	//获取列表数据
-	var sensorsListData = {$json_data};
 	//显示列表数据并可移动
-	sensorList(sensorsListData);
+	deviceList(devices);
 	//上传图片相关设置
 	uploadImg();
 });
@@ -82,9 +107,9 @@ function uploadImg(){
 			type:'POST',
 			data:data,
 			cache: false,
-			
 			contentType: false,		//不可缺参数
 			processData: false,		//不可缺参数
+
 			success:function(data){
 				$("#add-img-note").hide();
 				$("#btn-add-img").hide();
@@ -101,22 +126,17 @@ function uploadImg(){
 	});
 }
 
-function sensorList(sensorsListData){
-	var html= '';
-	var sensorType = '{$imghumi}';
-	var sensorsCount = sensorsListData._sensorsCount;
-	for(var i = 0; i < sensorsCount; i++) {
-		if(sensorsListData._data[i]['tag'] == "humi"){
-			sensorType = "'{$imghumi}'";
-		} else if(sensorsListData._data[i]['tag'] == "temper"){
-			sensorType = "'{$imgtemper}'";
-		}
-		html += "<div id=sensor-list"+ i +"><img src="+sensorType+">"+sensorsListData._data[i]['sensorName']+'</img></div>';
+function deviceList(devices){
+	var html ="";
+	for(var i = 0; i < devices.length; i++) {
+		deviceId = devices[i]['id'];
+		groupId = devices[i][0] % 4 + 1;
+		html += "<div class='device-list-scene' id='device"+ deviceId +"'><img class='left-img' src='"+ '{$img}' + groupId +".png'/>"+ devices[i]['name'] +"</div>";
 	}
-	html += "<div id='sensors-count' hidden='true'>"+ sensorsCount +"</div>";
-	
-	$('#sensors-list').append(html);
-	$("#sensors-list>div").easydrag();
+	html += "<div id='device-count' hidden='true'>"+ devices.length +"</div>";
+	// alert(html);
+	$('#device-list').append(html);
+	$("#device-list>div").easydrag();
 }
 
 function saveScene(){
@@ -135,95 +155,68 @@ function saveScene(){
 		//保存进数据库
 		saveImg(name, imgPath);
 	}
-}
-function getSceneIdByName(name){
-	//var sceneName = name;
-	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=getSceneId',
-		type:'POST',	
-		//dataType:'json',
-		data:{name:name},
-		//async:false,
-		success:function(data){
-			saveSensors(data);
-			alert("保存场景成功！")
-			
-			location.href="{$urlUserdata}a=doscenedisplay";
-		},
-		error:function(){
-			alert("保存失败，请重新尝试...");
-		}
-	});
-	
-}
 
-function saveImg(name, imgPath){
-	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=saveImg',
-		type:'POST',
-		//dataType:'json',
-		data:{name:name, imgPath:imgPath},
-		
-		success:function(data){
-			getSceneIdByName(name);
-		},
-		error:function(){
-			alert('保存图片场景出错！请重新尝试...');
-		}
-	});
-}
+	//保存场景
+	function saveImg(name, imgPath){
+		$.ajax({
+			url:'{$urlUserdata}a=dogetinfo&action=saveImg',
+			type:'POST',
+			data:{name:name, imgPath:imgPath},
+			success:function(data){
+				saveDevices(data);
+			},
+			error:function(){
+				alert('保存图片场景出错！请重新尝试...');
+			}
+		});
+	}
 
-function saveSensors(sceneId){
-	//在图片范围之内的保存，在图片范围之外的不保存，首先就要确定图片（场景）的边界
-	var divLeft = $("#feedback").offset().left;
-	var divTop = $("#feedback").offset().top;
-	var divRight = divLeft + $("#feedback").width();
-	var divBottom = divTop + $("#feedback").height();
-	var sensorsCount = $("#sensors-count").text();
-	for(var i = 0; i < sensorsCount; i++){
-		var sensorLeft = $('#sensor-list'+i).offset().left;
-		var sensorTop = $('#sensor-list'+i).offset().top;
-		if(sensorLeft > divLeft && sensorLeft < divRight
-				&& sensorTop > divTop && sensorTop < divBottom){
-			//计算出传感器相对于img的比例系数
-			//将数据记录到数据库中
-			//同时，也要记录id，方便对创景进行修改
-			//方式和savaImg()基本相同，都是ajax请求后端存储
-			var relaWidth = (sensorLeft - divLeft)/(divRight - divLeft);
-			var relaHeight = (sensorTop - divTop)/(divBottom - divTop);
-			//数据库字段有id（auto_increamse）,sensor_id, scene_id, rela_width, rela_height
-			//只有sensor_id还没有，所以通过ajax获取到
+	//获取scene_device的信息
+	function saveDevices(sceneId){
+		var divLeft = $("#feedback").offset().left;
+		var divTop = $("#feedback").offset().top;
+		var divRight = divLeft + $("#feedback").width();
+		var divBottom = divTop + $("#feedback").height();
+		// alert("saveDevice");
+
+		for(index in devices){
+			var deviceId = devices[index]['id'];
+
+			var deviceLeft = $('#device' + deviceId).offset().left;
 			
-			var sensorName = $('#sensor-list'+i).text();
-			$.ajax({
-				url:'{$urlUserdata}a=dogetinfo&action=getSensorId&sensorname='+sensorName,
-				type:'POST',
-				async:false,
-				success:function(data){
-					saveToDB(data, sceneId, relaWidth, relaHeight);
-				},
-				error:function(){
-					alert('获取传感器信息失败！请重新尝试...');
-				}
-			}).responseText;
+			var deviceTop = $('#device' + deviceId).offset().top;
+			
+			if(deviceLeft > divLeft && deviceLeft < divRight
+					&& deviceTop > divTop && deviceTop < divBottom) {
+				//计算出传感器相对于img的比例系数
+				//将数据记录到数据库中
+				//同时，也要记录id，方便对创景进行修改
+				//方式和savaImg()基本相同，都是ajax请求后端存储
+				var relaWidth = (deviceLeft - divLeft)/(divRight - divLeft);
+				var relaHeight = (deviceTop - divTop)/(divBottom - divTop);
+				//数据库字段有id（auto_increamse）,device_id, scene_id, rela_width, rela_height
+				//device_id = devices[index]['id']
+				saveToDB(deviceId, sceneId, relaWidth, relaHeight);
+			}
 		}
 	}
-}
 
 
-function saveToDB(data, sceneId, relaWidth, relaHeight){
-	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=saveSensorinfo',
-		type:'POST',
-		data:{sensorId:data, sceneId:sceneId, relaWidth:relaWidth, relaHeight:relaHeight},
-		async:false,
-		success:function(data){
-			//alert("保存成功！");
-		},
-		error:function(){
-			alert("保存信息失败，请重新尝试...");
-		}
-	}).responseText;
+	//将信息保存到数据库中
+	function saveToDB(deviceId, sceneId, relaWidth, relaHeight){
+		$.ajax({
+			url:'{$urlUserdata}a=dogetinfo&action=saveDeviceInfo',
+			type:'POST',
+			data:{deviceId:deviceId, sceneId:sceneId, relaWidth:relaWidth, relaHeight:relaHeight},
+			async:false,
+			success:function(data){
+				//alert("保存成功！");
+			},
+			error:function(){
+				alert("保存信息失败，请重新尝试...");
+			}
+		}).responseText;
+	}
 }
 </script>
 <!--

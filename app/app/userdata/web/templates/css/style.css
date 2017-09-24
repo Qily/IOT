@@ -1,1 +1,169 @@
-# Empty CSS file for your own CSS
+#logo {
+    position: absolute;
+    top: 10px
+}
+
+#login-user {
+    position: absolute;
+    top: 20px
+}
+
+#copyright {
+    position: relative;
+    top: 150px;
+}
+
+.superlink:hover {
+    opacity: 0.5;
+    cursor: pointer
+}
+
+.superlink {
+    opacity: 0.8;
+    cursor: pointer
+}
+
+.mainbody {
+    margin-bottom: 500px;
+}
+
+
+/* 文字过长会以省略号形式展示 table-layout:fixed很关键*/
+
+.table-overflow tbody tr td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+table {
+    table-layout: fixed;
+}
+
+.sensors {
+    font-size: 15px;
+    background-color: rgba(238, 159, 12, 0.19);
+    color: #FFFFFF
+}
+
+.scenes-list {
+    font-size: 18px;
+}
+
+.index-sensor-tr {
+    font-size: 16px;
+    font-weight: bold;
+    background-color: rgba(187, 134, 43, 0.19);
+    color: #1100FF;
+    opacity: 0.7;
+    cursor: default;
+}
+
+.nav-first-layer {
+    font-size: 16px;
+    color: rgba(17, 17, 19, 0.51);
+    font-weight: bold;
+    opacity: 0.7;
+    cursor: default;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.nav-second-layer:hover {
+    font-size: 18px;
+}
+
+.nav-second-layer {
+    font-size: 15px;
+}
+
+#group-option {
+    display: block;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+}
+
+.my-form {
+    background-color: #DDDDDD;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+tr td {
+    font-size: 18px;
+    color: #666;
+    opacity: 0.8;
+}
+
+.my-form-title {
+    font-size: 16px;
+    color: #0C78DD;
+    opacity: 0.8;
+    padding-bottom: 20px;
+    font-family: sans-serif;
+}
+
+#add-img-note {
+    font-size: 20px;
+    color: #5F1111;
+    opacity: 0.8;
+    font-weight: blod;
+}
+
+#inputfile {
+    height: 0;
+    width: 0;
+    z-index: -1;
+    position: absolute;
+    left: 10px;
+    top: 5px;
+}
+
+.device-list-scene {
+    font-size: 18px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    color: #00C3FF;
+}
+
+.left-img {
+    padding-right: 5px;
+}
+
+.left-padding-10 {
+    padding-left: 10px;
+}
+.device{
+    font-size: 16px;
+    background-color: #58696E;
+    opacity: 0.6;
+    color: #FFF;
+
+
+}
+.sensor{
+    font-size: 14px;
+    background-color: #000000;
+    color: #FFF;
+}
+#container1{
+    background-color:rgba(204, 187, 170, 0.34);
+}
+#container2{
+    background-color:rgba(170, 187, 204, 0.4);
+}
+#container3{
+    background-color:rgba(153, 153, 153, 0.38);
+}

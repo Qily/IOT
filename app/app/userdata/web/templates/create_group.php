@@ -8,7 +8,7 @@ echo <<<EOT
 -->
 
 
-		<div class="col-md-5">
+		<div class="col-md-4">
 			<table class="table">
 				<thead>
 					<tr>
@@ -18,6 +18,9 @@ echo <<<EOT
 						</th>
 						<th>
 							创建人
+						</th>
+						<th>
+							设备总数
 						</th>
 						<th>
 							操作
@@ -30,47 +33,37 @@ echo <<<EOT
 
 <!--
 EOT;
+$userGroups = DB::get_all("SELECT * FROM {$_M[table]['userdata_group']} WHERE create_man_id = '{$loginId}'");
+for($i = 0; $i < count($userGroups); $i++){
+	$group = $userGroups[$i];
+	//根据组名获得create_id从而从user表中获取用户名
+	$username = DB::get_one("SELECT username FROM {$_M[table]['user']} WHERE id = '{$group['create_man_id']}'");
+	
+	//根据组名在userdata_device表中获得device数量
+	$deviceCount = count(DB::get_all("SELECT id FROM {$_M[table]['userdata_device']} where group_id = '{$group['id']}'"));
 
-$loginUserId = get_met_cookie("metinfo_member_id");
-
-$loginUserGroups = DB::get_all("SELECT * From {$_M[table]['userdata_group_user']} where user_id = '{$loginUserId}'");
-for($i = 0; $i < count($loginUserGroups); $i++){
-      //获取组名称
-      $group = DB::get_one("SELECT * From {$_M[table]['userdata_group']} where id = '{$loginUserGroups[$i]['group_id']}'");
-      //获取创建人名称
-      $createUser = DB::get_one("SELECT * FROM {$_M[table]['user']} where id = '{$group['group_manager_id']}'");
-      $order = $i + 1;
+	$order = $i + 1;
+	array_push($group,$order, $username['username'], $deviceCount);
 echo <<<EOT
 -->
 					<tr>
 						<td>
-							{$order}
+							{$group[0]}
+						</td>
+						
+						<td>
+							{$group['name']}
 						</td>
 						<td>
-							{$group['group_id']}
+							{$group[1]}
 						</td>
 						<td>
-							{$createUser['username']}
+							{$group[2]}
 						</td>
 						<td>
-<!--
-EOT;
-if($createUser['username'] != get_met_cookie('metinfo_member_name')){
-echo <<<EOT
--->
-							<a class="btn btn-primary" disabled="true">删除</a>
 
-<!--
-EOT;
-} else{
-echo <<<EOT
--->
 							<a class="btn btn-danger" href="javascript:if(confirm('确定删除该组并删除组下的所有设备？！！'))location='{$urlUserdata}a=dogroupopera&action=del&id={$group['id']}'">删除</a>
-<!--
-EOT;
-}
-echo <<<EOT
--->
+
 						</td>
 					</tr>
 <!--
@@ -82,27 +75,27 @@ echo <<<EOT
 				</tbody>
 			</table>
 		</div>
-
+		<div class="col-md-1"></div>
 		<div class="col-md-3">
 			<div class="row">
 				<div class="col-md-12">·
-					<h2>
-						创建设备组
-					</h2>
-					<form role="form" action="{$urlUserdata}a=dogroupopera&action=create" method="POST">
-						<div class="form-group">
-							 
-							<label for="exampleInputEmail1">
-								设备组名称
-							</label>
-							<input type="text" class="form-control" name="groupName">
+					
+					<form role="form" action="{$urlUserdata}a=docreategroup&action=createGroup" method="POST">
+						<div class="text-center">
+							<label class="my-form-title ">修改设备信息</label>
 						</div>
 						<div class="form-group">
 							 
-							<label>
+							<label class="control-label">
+								设备组名称
+							</label>
+							<input type="text" class="form-control" placeholder="请输入你要创建的设备组名称 如：设备组1" name="group-name">
+						</div>
+						<div class="form-group">
+							<label class="control-label">
 								用户登录密码
 							</label>
-							<input type="password" class="form-control" name="loginPassword">
+							<input type="password" class="form-control" placeholder="请输入登录时的密码 如：123456" name="password">
 						</div>
 
 						<button type="submit" class="btn btn-success">
@@ -116,8 +109,6 @@ echo <<<EOT
 		<div class="col-md-1"></div>
 		</div>
 	</div>
-	<script src="{$bootstrip_min_js}"></script>
-	<script src="{$jquery_min_js}"></script>
 
 <!--
 EOT;

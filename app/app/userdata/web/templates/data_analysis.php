@@ -4,98 +4,142 @@ defined('IN_MET') or exit('No permission');//保持入口文件，每个应用�
 $title = '数据分析';
 require_once $this->template('own/header');
 
+
+//先获得相关的组
+$userGroups = DB::get_all("SELECT id, name FROM {$_M[table]['userdata_group']} WHERE create_man_id = '{$loginId}'");
+//通过组获得相关的device
+$devices = array();
+for($i = 0; $i < count($userGroups); $i++){
+	$singleGroupDevices = DB::get_all("SELECT * FROM {$_M[table]['userdata_device']} WHERE group_id = '{$userGroups[$i]['id']}' ORDER BY id ASC");
+	for($j = 0; $j < count($singleGroupDevices); $j++){
+		//根据设备和onet_id的联系，将onet和device联系起来
+		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$singleGroupDevices[$j]['onet_id']}'");
+		array_push($singleGroupDevices[$j], $userGroups[$i]['id'], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view']);
+	}
+	if($singleGroupDevices != null){
+		// array_push($singleGroupDevices, "a");
+    	$devices = array_merge($devices, $singleGroupDevices);
+	}
+	
+}
+//通过device获得相关的sensor
+$sensors = array();
+for($in = 0; $in < count($devices); $in++){
+	
+	$singleDeviceSensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE device_id = '{$devices[$in]['id']}' ORDER BY id ASC");
+
+	for($j = 0; $j < count($singleDeviceSensors); $j++){
+		//通过sensor获得相应的type
+		$type = DB::get_one("SELECT * FROM {$_M[table]['userdata_type']} WHERE id = '{$singleDeviceSensors[$j]['type_id']}'");
+		array_push($singleDeviceSensors[$j], $devices[$in][1], $type['name'], $type['data_flow'], $type['img_path']);
+	}
+
+	if($singleDeviceSensors != null){
+    	$sensors = array_merge($sensors, $singleDeviceSensors);
+	}
+}
+/*********************************************************************
+ * $devices[$i][0] 设备所在组号
+ * $devices[$i][1] 设备所在组名
+ * $devices[$i][2] 设备的id号
+ * $devices[$i][3] 设备所对应的onet data-view
+ *********************devices*****************************************
+ *********************sensors*****************************************
+ * $sensors[$i][0] 传感器所对应的设备id号 
+ * $sensors[$i][1] 传感器对应的类型名称
+ * $sensors[$i][2] 传感器对应的数据流
+ * $sensors[$i][3] 传感器对应的类型图片路径
+*********************************************************************/
+$json_devices = json_encode($devices);
+$json_sensors = json_encode($sensors);
+
 echo <<<EOT
 -->
 
 <div class="col-md-8">
 	<div class="row">
-		<div class="col-md-8">
+		
+		<div class="col-md-12">
 			<div class="row">
+				<form>
+
+					<div class="col-md-4">
+						<div class="row">
+							<div class="form-group" style="background-color:#CBA">
+								
+								<label>设备名称</label>
+								<div class="controls">
+									<select class="form-control" id="first-device-name"></select>
+								</div>
+								
+								<label>开始日期</label>
+								<input type="text" id="first-start-time" class="form-control calender"/>
+
+								<label>结束日期</label>
+								<input type="text" id="first-end-time" class="form-control calender"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="row">
+							<div class="form-group" style="background-color:#ABC">
+							
+								<label>设备名称</label>
+								<div class="controls">
+									<select class="form-control" id="second-device-name"></select>
+								</div>
+
+								<label>开始日期</label>
+								<input type="text" id="second-start-time" class="form-control calender"/>
+								<label>
+									结束日期
+								</label>
+								<input type="text" id="second-end-time" class="form-control calender"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="row">
+							<div class="form-group" style="background-color:#999999">
+							
+								<label>设备名称</label>
+								<div class="controls">
+									<select class="form-control" id="third-device-name"></select>
+								</div>		
+
+								<label>开始日期</label>
+								<input type="text" id="third-start-time" class="form-control calender"/>
+								<label>结束日期</label>
+								<input type="text" id="third-end-time" class="form-control calender"/>
+							</div>
+						</div>
+					</div>
+
+					<input type="button" class="btn btn-primary form-control" onclick="plotAllCharts()" value="开始分析" />
+				</form>
 				<div class="col-md-12">
 					<div class="row">
-						<form>
-
-							<div class="col-md-4">
-								<div class="row">
-									<div class="form-group" style="background-color:#CBA">
-										
-										<label>设备名称</label>
-										<div class="controls">
-											<select class="form-control" id="first-sensor-name"></select>
-										</div>
-										
-										<label>开始日期</label>
-										<input type="text" id="first-start-time" class="form-control calender"/>
-
-										<label>结束日期</label>
-										<input type="text" id="first-end-time" class="form-control calender"/>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-4">
-								<div class="row">
-									<div class="form-group" style="background-color:#ABC">
-									
-										<label>设备名称</label>
-										<div class="controls">
-											<select class="form-control" id="second-sensor-name"></select>
-										</div>
-
-										<label>开始日期</label>
-										<input type="text" id="second-start-time" class="form-control calender"/>
-										<label>
-											结束日期
-										</label>
-										<input type="text" id="second-end-time" class="form-control calender"/>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-4">
-								<div class="row">
-									<div class="form-group" style="background-color:#999999">
-									
-										<label>设备名称</label>
-										<div class="controls">
-											<select class="form-control" id="third-sensor-name"></select>
-										</div>		
-
-										<label>开始日期</label>
-										<input type="text" id="third-start-time" class="form-control calender"/>
-										<label>结束日期</label>
-										<input type="text" id="third-end-time" class="form-control calender"/>
-									</div>
-								</div>
-							</div>
-
-							<input type="button" class="btn btn-primary form-control" onclick="plotAllCharts()" value="开始分析" />
-						</form>
 						<div id="charts">
-							<div style="height: 20px"></div>
-							<!--<div id="container" style="height:400px"></div>
-							<div id="container1" style="height:400px"></div>
-							<div id="container2" style="height:400px"></div>-->
+							<div style="height: 20px"></div>							
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
-		</div>
-		<div class="col-md-4">
-			<div style="height: 290px"></div>
-			<div id="analysis-data"></div><!-- analysis-data -->
-		</div><!-- col-md-3 -->
+		</div><!-- col-md-12 -->	
 	</div>
 </div><!-- col-md-8 1+2+8(9+3)+1 -->
 
 <div class="col-md-1"></div>
 <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
 
-<script src="{$jquery_min_js}"></script>
-<script src="{$jquery_datetimepicker_full_min_js}"></script>
+
 
 <script type="text/javascript">
+var devices = $json_devices;
+var sensors = $json_sensors;
 $(document).ready(function(){
 	loadSelectList();
 	$.datetimepicker.setLocale('ch');
@@ -107,181 +151,63 @@ $(document).ready(function(){
 	});
 });
 
-function init(){
-	var height = $('#top-img').height()/2;
-	var myHeight = height-24;
-	logoHeight = height/2;
-	$("#login-user").css({'position':'absolute', 'top':myHeight+'px'});
-	$("#logo").css({'position':'absolute', 'top':logoHeight+'px'});
-}
-
-function plotAllCharts(){
-	if($("#first-sensor-name").val() != '不启用'){
-		if($("#container1")){
-			$("#container1").remove();
-		}
-		$("#charts").append("<div id='container1' style='height:400px'></div>")
-		var container = "container1";
-		var sensorName = $("#first-sensor-name").val();
-		var startTime = $("#first-start-time").val();
-		var endTime = $("#first-end-time").val();
-		
-		if(startTime == "" || startTime == null) startTime = null;
-		if(endTime == "" || endTime == null) endTime = null;
-		getHistData(container, sensorName, startTime, endTime);
-	}
-	if($("#second-sensor-name").val() != '不启用'){
-		if($("#container2")){
-			$("#container2").remove();
-		}
-		$("#charts").append("<div id='container2' style='height:400px'></div>")
-		var container = "container2";
-		var sensorName = $("#second-sensor-name").val();
-		var startTime = $("#second-start-time").val();
-		var endTime = $("#second-end-time").val();
-		
-		if(startTime == "" || startTime == null) startTime = null;
-		if(endTime == "" || endTime == null) endTime = null;
-		getHistData(container, sensorName, startTime, endTime);
-	}
-	if($("#third-sensor-name").val() != '不启用'){
-		if($("#container3")){
-			$("#container3").remove();
-		}
-		$("#charts").append("<div id='container3' style='height:400px'></div>")
-		var container = "container3";
-		var sensorName = $("#third-sensor-name").val();
-		var startTime = $("#third-start-time").val();
-		var endTime = $("#third-end-time").val();
-		
-		if(startTime == "" || startTime == null) startTime = null;
-		if(endTime == "" || endTime == null) endTime = null;
-	 	
-		getHistData(container, sensorName, startTime, endTime);
-	}
-}
-
-
 function loadSelectList(){
-	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=getSensorsByLoginId',
-		type:'POST',
-		dataType:'json',
+	var html = "<option>不启用</option>";
+	for(i in devices){
+		html += "<option>"+ devices[i].name +"</option>";
+	}
+	$("select").append(html);
+}
 
-		success:function(data){
-			//alert(data);
-			//通过传回来的传感器参数获得对应的sensorName
-			//将sensorName放到select中
-			var html="";
-			html += "<option>不启用</option>"
-			for(var i = 0; i < data._count; i++){
-				
-				html += "<option>"+ data._data[i].sensorName +"</option>"
+//******************************************/
+//*          响应开始分析事件
+//******************************************/
+function plotAllCharts(){
+	getParam($("#first-device-name"), $('#first-start-time'), $('#first-end-time'), 1);
+	getParam($("#second-device-name"), $('#second-start-time'), $('#second-end-time'), 2);
+	getParam($("#third-device-name"), $('#third-start-time'), $('#third-end-time'), 3);
+	function getParam(device, start, end, index){
+		var container = $('#container'+index);
+		if(device.val() != '不启用'){
+			if(container){
+				container.remove();
 			}
-			$("select").append(html);
+			$("#charts").append("<div id='container" + index + "'></div>");
+			var containerId = "#container" + index;
+			var containerId = "container"+index;
+			var deviceName = device.val();
+			var startTime = start.val();
+			var endTime = end.val();
 			
-		},
-		error:function(){
-
-		}
-	});
-}
-
-function getHistData(domId, sensorName, startTime, endTime){
-	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=getHistData',
-		type:'POST',
-		dataType:'json',
-		async:false,
-		data:{sensorName:sensorName, startTime:startTime, endTime:endTime},
-		success:function(data){
-			//alert(sensorName+"+"+startTime+"+"+endTime);
-			//alert(data);
-			plot_static(data, domId);
-		},
-		error:function(){
-			alert('获取历史数据错误');
-		}
-	}).responseText;
-}
-
-function plot_dynamic(){
-	var dom = document.getElementById("container");
-	var myChart = echarts.init(dom);
-	var app = {};
-	option = null;
-	function randomData() {
-		now = new Date(+now + oneDay);
-		value = value + Math.random() * 21 - 10;
-		return {
-			name: now.toString(),
-			value: [
-				[now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
-				Math.round(value)
-			]
+			if(startTime == "" || startTime == null) startTime = null;
+			if(endTime == "" || endTime == null) endTime = null;
+			// alert($('#container'+index)+ "@" +containerId+ "@" +deviceName+ "@" + startTime+ "@" + endTime);
+			getHistData(containerId, deviceName, startTime, endTime);
 		}
 	}
-
-	var data = [];
-	var now = +new Date(1997, 9, 3);
-	var oneDay = 24 * 3600 * 1000;
-	var value = Math.random() * 1000;
-	for (var i = 0; i < 1000; i++) {
-		data.push(randomData());
-	}
-
-	option = {
-		title: {
-			text: '动态数据 + 时间坐标轴'
-		},
-		tooltip: {
-			trigger: 'axis',
-			formatter: function (params) {
-				params = params[0];
-				var date = new Date(params.name);
-				return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+	//获得历史数据
+	function getHistData(domId, deviceName, startTime, endTime){
+		var sensorContainer = "";
+		$.ajax({
+			url:'{$urlUserdata}a=dogetinfo&action=getHistData',
+			type:'POST',
+			dataType:'json',
+			async:false,
+			data:{deviceName:deviceName, startTime:startTime, endTime:endTime},
+			success:function(data){
+				for(i in data){
+					if(data[i].count != 0){
+						$("#"+domId).append("<div class='col-md-7' id='sensor-" + domId +"-"+ i + "' style='height:300px'></div>");
+						$("#"+domId).append("<div class='col-md-5'>aaa</div>");
+						sensorContainer = "sensor-" + domId + "-" + i;
+						plot_static(data[i], sensorContainer);
+					}
+				}
 			},
-			axisPointer: {
-				animation: false
+			error:function(){
+				alert('获取'+deviceName+'历史数据错误');
 			}
-		},
-		xAxis: {
-			type: 'time',
-			splitLine: {
-				show: false
-			}
-		},
-		yAxis: {
-			type: 'value',
-			boundaryGap: [0, '100%'],
-			splitLine: {
-				show: false
-			}
-		},
-		series: [{
-			name: '模拟数据',
-			type: 'line',
-			showSymbol: false,
-			hoverAnimation: false,
-			data: data
-		}]
-	};
-
-	setInterval(function () {
-
-		for (var i = 0; i < 5; i++) {
-			data.shift();
-			data.push(randomData());
-		}
-
-		myChart.setOption({
-			series: [{
-				data: data
-			}]
-		});
-	}, 1000);;
-	if (option && typeof option === "object") {
-		myChart.setOption(option, true);
+		}).responseText;
 	}
 }
 
@@ -300,8 +226,9 @@ function plot_static(datastream, domId){
 		dataX[i] = datastream.datastreams[0].datapoints[i].at;
 		data1[i] = datastream.datastreams[0].datapoints[i].value;
 	}
+
 	
-	dealData(domId, data1, datastream.count);
+	// dealData(domId, data1, datastream.count);
 
 	option = {
 		title: {
@@ -339,12 +266,6 @@ function plot_static(datastream, domId){
 				stack: '总量',
 				data: data1
 			}
-			// {
-			// 	name:'联盟广告',
-			// 	type:'line',
-			// 	stack: '总量',
-			// 	data:[220, 182, 191, 234, 290, 330]
-			// },
 		]
 	};
 	
