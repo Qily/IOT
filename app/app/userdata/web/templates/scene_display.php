@@ -1,12 +1,61 @@
 <!--<?php
 defined('IN_MET') or exit('No permission');//保持入口文件，每个应用模板都要添加
 
-$title = '场景展示';
+$title = '设备信息';
 require_once $this->template('own/header');
 
-$loginId = get_met_cookie('metinfo_member_id');
+//先获得相关的组
+$userGroups = DB::get_all("SELECT id, name FROM {$_M[table]['userdata_group']} WHERE create_man_id = '{$loginId}'");
+//通过组获得相关的device
+$devices = array();
+for($i = 0; $i < count($userGroups); $i++){
+	$singleGroupDevices = DB::get_all("SELECT * FROM {$_M[table]['userdata_device']} WHERE group_id = '{$userGroups[$i]['id']}' ORDER BY id ASC");
+	for($j = 0; $j < count($singleGroupDevices); $j++){
+		//根据设备和onet_id的联系，将onet和device联系起来
+		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$singleGroupDevices[$j]['onet_id']}'");
+		array_push($singleGroupDevices[$j], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view'], $onet['onet_device_id']);
+	}
+	if($singleGroupDevices != null){
+		// array_push($singleGroupDevices, "a");
+    	$devices = array_merge($devices, $singleGroupDevices);
+	}
+	
+}
+//通过device获得相关的sensor
+$sensors = array();
+for($in = 0; $in < count($devices); $in++){
+	
+	$singleDeviceSensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE device_id = '{$devices[$in]['id']}' ORDER BY id ASC");
+
+	for($j = 0; $j < count($singleDeviceSensors); $j++){
+		//通过sensor获得相应的type
+		$type = DB::get_one("SELECT * FROM {$_M[table]['userdata_type']} WHERE id = '{$singleDeviceSensors[$j]['type_id']}'");
+		array_push($singleDeviceSensors[$j], $devices[$in][1], $type['name'], $type['data_flow'], $type['img_path'], $devices[$in][3]);
+	}
+
+	if($singleDeviceSensors != null){
+    	$sensors = array_merge($sensors, $singleDeviceSensors);
+	}
+}
+/*********************************************************************
+ * $devices[$i][0] 设备所在组号
+ * $devices[$i][1] 设备所在组名
+ * $devices[$i][2] 设备的id号
+ * $devices[$i][3] 设备所对应的onet data-view
+ *********************devices*****************************************
+ *********************sensors*****************************************
+ * $sensors[$i][0] 传感器所对应的设备id号 
+ * $sensors[$i][1] 传感器对应的类型名称
+ * $sensors[$i][2] 传感器对应的数据流
+ * $sensors[$i][3] 传感器对应的类型图片路径
+ * $sensors[$i][3] 传感器对应的所在设备onet_device_id
+*********************************************************************/
+$json_devices = json_encode($devices);
+$json_sensors = json_encode($sensors);
+
 //TODO:对比输出
 $scenes = DB::get_all("select * from {$_M[table]['userdata_scene']} where create_man_id = '{$loginId}' ORDER BY id ASC");
+
 $obj->_data = $scenes;
 $scenes_json = json_encode($obj);
 
@@ -33,6 +82,9 @@ echo <<<EOT
 <div class="col-md-1"></div>
 
 <script type="text/javascript">
+var mydevices = {$json_devices};
+var mysensors = {$json_sensors};
+
 var scenes = $scenes_json._data;
 $(document).ready(function (){
 	//加载场景列表
@@ -40,7 +92,7 @@ $(document).ready(function (){
 	//加载第一个场景
 	loadScene(40);
 	//加载场景对应的传感器
-	// setInterval("getSensors()",2000);
+	setInterval("getSensors()",2000);
 
 });
 
@@ -138,7 +190,7 @@ function loadScene(sceneId){
 				// alert($('#sensor-in-scene'+ data._data[0]['id'] + ' span'));
 
 				//TODO
-				$('#sensor-in-scene'+ data._data[0]['id'] + ' span').text(100);
+				// $('#sensor-in-scene'+ data._data[0]['id'] + ' span').text(100);
 			},
 			error:function(){
 				alert("获取场景对应的传感器出错！");
@@ -162,42 +214,38 @@ function createScene(){
 
 
 
-// function getSensors(){
-// 	var sensorInSceneId="";
-// 	var sensorName = "";
-// 	//alert($("#sensors-count").text());
-// 	for(var i = 0; i < $("#sensors-count").text(); i++){
-// 		sensorName = $("#sensor-in-scene"+i).text().split("val:",1);
-// 		// alert(sensorName);
-// 		sensorInSceneId = "sensor-in-scene-val"+i;
-// 		getLastData(sensorName, sensorInSceneId);
-// 		// alert("#"+sensorInSceneId);
-		
-// 	}
-// }
+	
+function getSensors(){
+	for(i in mysensors){
+		// alert(mysensors[0][4]);
+		sensorId = mysensors[i]['id'];
+		onetDeviceId = mysensors[i][4];
+		onetDataflow = mysensors[i][2];
+		getLastData(sensorId, onetDeviceId, onetDataflow);
+	}
+	
+}
+	
+function getLastData(sensorId, onetDeviceId, onetDataflow){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getLastData',
+		type:'POST',
+		dataType:'json',
+		data:{onetDeviceId:onetDeviceId, onetDataflow:onetDataflow},
+		success:function(data){
+			//先找出所有的传感器
+			//通过名称将传感器和td的Id联系，从而更新数据
+			if($('#sensor-in-scene'+ sensorId + ' span')){
+				$('#sensor-in-scene'+ sensorId + ' span').text(data.datastreams[0].datapoints[0].value);
+			}
+			//alert(data.datastreams[0].datapoints[0].value);
 
-// function getLastData(sensorName, sensorInSceneId){
-// 	// alert(sensorName);
-// 	// sensorName = "SIM900A_Test1";
-
-// 	$.ajax({
-// 		url:'{$urlUserdata}a=dogetinfo&action=getLastData&sensorName='+sensorName,
-// 		type:'POST',
-// 		dataType:'json',
-// 		// data:{sensorName:sensorName},
-// 		// async:false,
-// 		success:function(data){
-// 			//先找出所有的传感器
-// 			//通过名称将传感器和td的Id联系，从而更新数据
-
-// 			$("#"+sensorInSceneId).text("val:"+data.datastreams[0].datapoints[0].value);
-// 		},
-// 		error:function(){
-// 			//alert('获取历史数据错误');
-// 			//return;
-// 		}
-// 	});
-// }
+		},
+		error:function(){
+			//alert('获取历史数据错误');
+		}
+	});
+}
 
 </script>
 <!--

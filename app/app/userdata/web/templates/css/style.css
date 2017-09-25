@@ -167,3 +167,7 @@ tr td {
 #container3{
     background-color:rgba(153, 153, 153, 0.38);
 }
+.sensor-charts{
+    padding-top:50px;
+    padding-left:50px;
+}

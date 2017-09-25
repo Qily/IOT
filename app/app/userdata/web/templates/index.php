@@ -13,7 +13,7 @@ for($i = 0; $i < count($userGroups); $i++){
 	for($j = 0; $j < count($singleGroupDevices); $j++){
 		//根据设备和onet_id的联系，将onet和device联系起来
 		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$singleGroupDevices[$j]['onet_id']}'");
-		array_push($singleGroupDevices[$j], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view']);
+		array_push($singleGroupDevices[$j], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view'], $onet['onet_device_id']);
 	}
 	if($singleGroupDevices != null){
 		// array_push($singleGroupDevices, "a");
@@ -30,14 +30,26 @@ for($in = 0; $in < count($devices); $in++){
 	for($j = 0; $j < count($singleDeviceSensors); $j++){
 		//通过sensor获得相应的type
 		$type = DB::get_one("SELECT * FROM {$_M[table]['userdata_type']} WHERE id = '{$singleDeviceSensors[$j]['type_id']}'");
-		array_push($singleDeviceSensors[$j], $devices[$in][1], $type['name'], $type['data_flow'], $type['img_path']);
+		array_push($singleDeviceSensors[$j], $devices[$in][1], $type['name'], $type['data_flow'], $type['img_path'], $devices[$in][3]);
 	}
 
 	if($singleDeviceSensors != null){
     	$sensors = array_merge($sensors, $singleDeviceSensors);
 	}
 }
-
+/*********************************************************************
+ * $devices[$i][0] 设备所在组号
+ * $devices[$i][1] 设备所在组名
+ * $devices[$i][2] 设备的id号
+ * $devices[$i][3] 设备所对应的onet data-view
+ *********************devices*****************************************
+ *********************sensors*****************************************
+ * $sensors[$i][0] 传感器所对应的设备id号 
+ * $sensors[$i][1] 传感器对应的类型名称
+ * $sensors[$i][2] 传感器对应的数据流
+ * $sensors[$i][3] 传感器对应的类型图片路径
+ * $sensors[$i][3] 传感器对应的所在设备onet_device_id
+*********************************************************************/
 $json_devices = json_encode($devices);
 $json_sensors = json_encode($sensors);
 echo <<<EOT
@@ -45,55 +57,48 @@ echo <<<EOT
 
 
 <script type="text/javascript">
-
-// $(document).ready(function(){
-	// 	getSensors();
-	// 	setInterval("getSensors()",5000);
-	// });
-	
-	
-	// function getSensors(){
-	// 	$.ajax({
-	// 		url:'{$urlUserdata}a=dogetinfo&action=getSensorsByLoginId',
-	// 		type:'POST',
-	// 		dataType:'json',
-	// 		//cache:true,
-	// 		//data:{sensorName:sensorName, startTime:startTime, endTime:endTime},
-	// 		success:function(data){
-	// 			//先找出所有的传感器
-	// 			//通过名称将传感器和td的Id联系，从而更新数据
-	// 			for(var i = 0; i < data._count; i++){
-	// 				getLastData(data._data[i].sensorName);
-	// 			}
-	
-	// 		},
-	// 		error:function(){
-	// 			alert('获取历史');
-	// 		}
-	// 	});
-	// }
-	
-	// function getLastData(sensorName){
-	// 	$.ajax({
-	// 		url:'{$urlUserdata}a=dogetinfo&action=getLastData',
-	// 		type:'POST',
-	// 		dataType:'json',
-	// 		data:{sensorName:sensorName},
-	// 		success:function(data){
-	// 			//先找出所有的传感器
-	// 			//通过名称将传感器和td的Id联系，从而更新数据
-	
-	// 			$("#"+sensorName).text(data.datastreams[0].datapoints[0].value);
-	// 			//alert(data.datastreams[0].datapoints[0].value);
-	
-	// 		},
-	// 		error:function(){
-	// 			//alert('获取历史数据错误');
-	// 		}
-	// 	});
-	// }
-
+var sensors = {$json_sensors};
 var devices = {$json_devices};
+
+$(document).ready(function(){
+	getSensors();
+	setInterval("getSensors()",5000);
+});
+	
+	
+function getSensors(){
+	// 获取相应的
+	for(i in sensors){
+		// alert(sensors[0][4]);
+		sensorId = sensors[i]['id'];
+		onetDeviceId = sensors[i][4];
+		onetDataflow = sensors[i][2];
+		// alert(sensorId+"@"+onetDeviceId+"@"+onetDataflow);
+		getLastData(sensorId, onetDeviceId, onetDataflow);
+	}
+	
+}
+	
+function getLastData(sensorId, onetDeviceId, onetDataflow){
+	$.ajax({
+		url:'{$urlUserdata}a=dogetinfo&action=getLastData',
+		type:'POST',
+		dataType:'json',
+		data:{onetDeviceId:onetDeviceId, onetDataflow:onetDataflow},
+		success:function(data){
+			//先找出所有的传感器
+			//通过名称将传感器和td的Id联系，从而更新数据
+			// alert(data.datastreams[0].datapoints[0].value);
+			$("#sensor"+sensorId).text(data.datastreams[0].datapoints[0].value);
+			//alert(data.datastreams[0].datapoints[0].value);
+
+		},
+		error:function(){
+			//alert('获取历史数据错误');
+		}
+	});
+}
+
 function load() {
 	function createApp(dom, host, openId, is_model, device_id) {
 		var width = dom.clientWidth;
@@ -173,7 +178,6 @@ function initIndex(sensors){
 
 
 $(document).ready(function(){
-	var sensors = {$json_sensors};
 	initIndex(sensors);
 	IniEvent();
 });

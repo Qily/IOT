@@ -119,10 +119,16 @@ echo <<<EOT
 
 					<input type="button" class="btn btn-primary form-control" onclick="plotAllCharts()" value="开始分析" />
 				</form>
-				<div class="col-md-12">
+				<div class="col-md-7">
 					<div class="row">
 						<div id="charts">
 							<div style="height: 20px"></div>							
+						</div>
+					</div>
+				</div>
+				<div class="col-md-5">
+					<div class="row">
+						<div class='sensor-charts'>
 						</div>
 					</div>
 				</div>
@@ -195,12 +201,13 @@ function plotAllCharts(){
 			async:false,
 			data:{deviceName:deviceName, startTime:startTime, endTime:endTime},
 			success:function(data){
+				// alert(data);
+				// alert(data.datastreams[1]);
 				for(i in data){
 					if(data[i].count != 0){
-						$("#"+domId).append("<div class='col-md-7' id='sensor-" + domId +"-"+ i + "' style='height:300px'></div>");
-						$("#"+domId).append("<div class='col-md-5'>aaa</div>");
-						sensorContainer = "sensor-" + domId + "-" + i;
-						plot_static(data[i], sensorContainer);
+						$("#"+domId).append("<div id='sensor-" + domId +"-"+ i + "' style='height:300px'></div>");
+						sensorContainerId = "sensor-" + domId + "-" + i;
+						plot_static(data[i], sensorContainerId, deviceName);
 					}
 				}
 			},
@@ -211,7 +218,7 @@ function plotAllCharts(){
 	}
 }
 
-function plot_static(datastream, domId){
+function plot_static(datastream, domId, deviceName){
 	//获取了相应的数据datastream
 	//alert(datastream.count);
 	var dom = document.getElementById(domId);
@@ -219,6 +226,7 @@ function plot_static(datastream, domId){
 	var app = {};
 	option = null;
 	app.title = '多 X 轴示例';
+	type="湿度";
 	
 	var dataX = new Array();
 	var data1 = new Array();
@@ -226,19 +234,17 @@ function plot_static(datastream, domId){
 		dataX[i] = datastream.datastreams[0].datapoints[i].at;
 		data1[i] = datastream.datastreams[0].datapoints[i].value;
 	}
-
+	// dealData(chartContainerId, data1, datastream.count);
 	
-	// dealData(domId, data1, datastream.count);
-
 	option = {
 		title: {
-			text: '数据浏览'
+			text: deviceName
 		},
 		tooltip: {
 			trigger: 'axis'
 		},
 		legend: {
-			data:['温度传感器','湿度传感器']
+			data:[type]
 		},
 		grid: {
 			left: '3%',
@@ -270,6 +276,7 @@ function plot_static(datastream, domId){
 	};
 	
 	myChart.setOption(option);
+	
 }
 
 
@@ -332,15 +339,8 @@ function dealData(domId, data, dataLength){
 	// calcMost();
 	var center = calcCenter(normalData, normalCount);
 
-	var analysisTable = "";
-	if(domId == "container1") {
-		analysisTable = 'analysis-table1';
-	} else if(domId == "container2"){
-		analysisTable = 'analysis-table2';
-	} else{
-		analysisTable = 'analysis-table3'
-	}
-	plotChart(analysisTable, avg, max, min, center, eData, count);
+	
+	plotChart(domId, avg, max, min, center, eData, count);
 }
 
 
@@ -362,24 +362,25 @@ function calcAvg(normalData, normalCount){
 }
 
 function plotChart(analysisTable, avg, max, min, center, eData, count){
+	alert(analysisTable);
+	
 	if($("#"+analysisTable)) {
 		$("#"+analysisTable).remove();
 	}
 	var html = "";
-	html += "<div id=" + analysisTable + ">";
-	html += "<div id=" + analysisTable + " style='height: 80px'></div>";
-	html += "<div style='height: 320px'> <table class='table'> <tbody>";
-	html += "<tr><td>平均数</td>";
-	html += "<td>"+avg+"</td></tr>";
 
-	html += "<tr><td>最大值</td>";
-	html += "<td>"+max+"</td></tr>";
+	html += "<table class='table'> <tbody>";
+	// html += "<tr><td>平均数</td>";
+	// html += "<td>"+avg+"</td></tr>";
 
-	html += "<tr><td>最小值</td>";
-	html += "<td>"+min+"</td></tr>";
+	// html += "<tr><td>最大值</td>";
+	// html += "<td>"+max+"</td></tr>";
 
-	html += "<tr><td>中位数</td>";
-	html += "<td>"+center+"</td></tr>";
+	// html += "<tr><td>最小值</td>";
+	// html += "<td>"+min+"</td></tr>";
+
+	// html += "<tr><td>中位数</td>";
+	// html += "<td>"+center+"</td></tr>";
 
 	html += "<tr><td>可能异常值</td>";
 	html += "<td>";
@@ -389,8 +390,9 @@ function plotChart(analysisTable, avg, max, min, center, eData, count){
 	html +="</td>";
 	html += "</tr>";
 	
-	html += "</tbody> </table> </div></div>";
-	$('#analysis-data').append(html);
+	html += "</tbody> </table>";
+	alert(html);
+	$("#"+analysisTable).append(html);
 }
 </script>
 

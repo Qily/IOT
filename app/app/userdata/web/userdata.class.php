@@ -232,7 +232,7 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 $onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$deviceData['onet_id']}'");
                 $start_time = $_M[form]['startTime'];
                 $end_time = $_M[form]['endTime'];
-                $limit = 5;
+                $limit = 100;
                 $dataHists = array();
                 //根据id获取相应的sensor                
                 $sensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE device_id = '{$deviceData['id']}'");
@@ -249,16 +249,8 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 echo($json_data);
                 break;
             case 'getLastData':
-                $sensorData = DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE sensorName = '{$_M['form']['sensorName']}'");
-                $device_id = $sensorData['deviceId'];
 
-                if($sensorData['tag'] == 'humi'){
-                    $datastream_id = "humidity_data_flow";
-                } else{
-                    $datastream_id = "temperature_data_flow";
-                }
-                
-                $dataHist = $this->sensOper->getLastDatapoint($device_id, $datastream_id);
+                $dataHist = $this->sensOper->getHistData($_M[form]['onetDeviceId'], $_M[form]['onetDataflow']);
 
                 $json_data = json_encode($dataHist);
                 echo($json_data);

@@ -20,9 +20,9 @@ echo <<<EOT
 
 <script type="text/javascript">
 $(document).ready(function(){
-	$(".pinned").pin();
-	$(".nav").pin();
-
+	$(".pinned").pin({minWidth:800});
+	$(".nav").pin({minWidth:800});
+	$(".sensor-charts").pin({minWidth:800});
 });
 </script>
 	</body>
