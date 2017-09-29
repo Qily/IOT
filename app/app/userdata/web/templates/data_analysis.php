@@ -13,8 +13,9 @@ for($i = 0; $i < count($userGroups); $i++){
 	$singleGroupDevices = DB::get_all("SELECT * FROM {$_M[table]['userdata_device']} WHERE group_id = '{$userGroups[$i]['id']}' ORDER BY id ASC");
 	for($j = 0; $j < count($singleGroupDevices); $j++){
 		//根据设备和onet_id的联系，将onet和device联系起来
-		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$singleGroupDevices[$j]['onet_id']}'");
-		array_push($singleGroupDevices[$j], $userGroups[$i]['id'], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view']);
+		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE device_id = '{$singleGroupDevices[$j]['id']}'");
+		
+		array_push($singleGroupDevices[$j], $userGroups[$i]['id'], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view'], $onet['onet_device_id']);
 	}
 	if($singleGroupDevices != null){
 		// array_push($singleGroupDevices, "a");
@@ -194,15 +195,23 @@ function plotAllCharts(){
 	//获得历史数据
 	function getHistData(domId, deviceName, startTime, endTime){
 		var sensorContainer = "";
+		var deviceOnetId = "";
+		var deviceId = 0;
+		for(i in devices){
+			if(devices[i]['name'] == deviceName){
+				deviceOnetId = devices[i][4];
+				deviceId = devices[i]['id'];
+				// alert(deviceOnetId+"#"+deviceId);
+			}
+		}
 		$.ajax({
 			url:'{$urlUserdata}a=dogetinfo&action=getHistData',
 			type:'POST',
 			dataType:'json',
 			async:false,
-			data:{deviceName:deviceName, startTime:startTime, endTime:endTime},
+			data:{deviceOnetId:deviceOnetId, startTime:startTime, endTime:endTime, deviceId:deviceId},
 			success:function(data){
 				// alert(data);
-				// alert(data.datastreams[1]);
 				for(i in data){
 					if(data[i].count != 0){
 						$("#"+domId).append("<div id='sensor-" + domId +"-"+ i + "' style='height:300px'></div>");

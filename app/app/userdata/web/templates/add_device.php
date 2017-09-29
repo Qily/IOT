@@ -66,35 +66,8 @@ echo <<<EOT
 
 
 	<setion>
-		<div class="col-md-5 my-form">
-			<form>
-				<div class="text-center">
-					<label class="my-form-title ">修改设备信息</label>
-				</div>
-				<div class="form-group">
-					<label class="control-label">设备名称</label><label style="color:red">&nbsp;*必填</label>
-					<div class="controls form-contorls">
-						<select class="form-control" id="group-option" name="group-name">
-						</select>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label class="control-label">鉴权码</label><label style="color:red">&nbsp;*必填</label>
-					<div class="controls">
-						<input type="text" placeholder="在购买的设备上寻找授权码，如：xxxx-xxxx-xxxx-xxxx" class="form-control" name="device-serial-num">
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label class="control-label">组别</label><label style="color:red">&nbsp;*必填</label>
-					<div class="controls form-contorls">
-						<select class="col-md-6 controls" id="group-option" name="group-name">
-						</select>
-						<input type="button" class="btn btn-info col-md-offset-1 col-md-5" value="确认修改"/>
-					</div>
-				</div>
-			</form>
+		<div class="col-md-5">
+			
 		</div>	
 	</setion>
 

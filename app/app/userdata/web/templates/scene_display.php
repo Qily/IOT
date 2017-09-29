@@ -12,7 +12,8 @@ for($i = 0; $i < count($userGroups); $i++){
 	$singleGroupDevices = DB::get_all("SELECT * FROM {$_M[table]['userdata_device']} WHERE group_id = '{$userGroups[$i]['id']}' ORDER BY id ASC");
 	for($j = 0; $j < count($singleGroupDevices); $j++){
 		//根据设备和onet_id的联系，将onet和device联系起来
-		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$singleGroupDevices[$j]['onet_id']}'");
+		$onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE device_id = '{$singleGroupDevices[$j]['id']}'");
+
 		array_push($singleGroupDevices[$j], $userGroups[$i]['name'], $singleGroupDevices[$j]['id'], $onet['onet_data_view'], $onet['onet_device_id']);
 	}
 	if($singleGroupDevices != null){

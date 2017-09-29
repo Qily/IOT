@@ -18,7 +18,26 @@ Class SensorOperation{
 	
 	}
 
-	public function createSensor(){
+	public function createDevice($deviceTitle, $authinfo, $protocal){
+		$device = "{
+			\"title\":\"$deviceTitle\",
+			\"auth_info\":\"$authinfo\",
+			\"private\":true,
+			\"protocol\":\"$protocal\"
+			}";
+			
+		$datastream = $this->getApi()->device_add($device);
+		
+		$error_code = 0;
+		$error = '';
+		if (empty($datastream)) {
+			//处理错误信息
+			$error_code = $this->getApi()->error_no();
+			$error = $this->getApi()->error();
+		}
+		
+		//展现设备
+		return $datastream;
 		
 	}
 	public function delSensor($device_id){
@@ -27,8 +46,8 @@ Class SensorOperation{
 		$error = '';
 		if (empty($datastream)) {
 			//处理错误信息
-			$error_code = $sm->error_no();
-			$error = $sm->error();
+			$error_code = $this->getApi()->error_no();
+			$error = $this->getApi()->error();
 		}
 		//展现设备
 		var_dump($datastream);
@@ -44,8 +63,8 @@ Class SensorOperation{
         $error_code = 0;
         $error = '';
         if(empty($datastream)){
-            $error_code = $sm->error_no();
-			$error = $sm->error();
+            $error_code = $this->getApi()->error_no();
+			$error = $this->getApi()->error();
 			return "error";
         } else {
 			return $datastream;
@@ -63,8 +82,8 @@ Class SensorOperation{
 		$error_code = 0;
         $error = '';
         if(empty($datastream)){
-            $error_code = $sm->error_no();
-			$error = $sm->error();
+            $error_code = $this->getApi()->error_no();
+			$error = $this->getApi()->error();
 			return "error";
         } else {
 			return $datastream;

@@ -1,0 +1,11 @@
+ul{
+    display:inline;
+    white-space: nowrap;
+}
+ul li{
+    padding: 10px 20px;
+    display: inline-block;
+    background:#8A2D3E;
+    white-space:nowrap;
+}
+

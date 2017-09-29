@@ -15,27 +15,7 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
 
     public function doindex(){//定义自己的方法
         global $_M;//引入全局数组
-        $action = $_M[form]['action'];
-        switch($action){
-            case 'del':
-				$delSensor = DB::get_one("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE id = {$_M[form][id]}");
-                $query = "DELETE from {$_M[table]['userdata_sensor']} WHERE id= {$_M[form][id]}";
-                DB::query($query);
 
-				$this->sensOper->delSensor($delSensor[deviceId]);
-                $sucToPage = $_M[url][site]."data/request_page.php?n=userdata&c=userdata&a=doindex";
-                $text =" 删除成功！";
-                require_once $this -> template('own/success');
-                break;
-            case 'up':
-                $sucToPage = $_M[url][site]."data/request_page.php?n=userdata&c=userdata&a=doindex";
-                $text = $_M[form]['id'];
-                require_once $this -> template('own/success');
-                break;
-            default:
-                break;
-
-        }
 	    require_once $this ->template('own/index');
     }
 
@@ -72,40 +52,53 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 //1 device的
                 $serial = $_M[form]['device-serial-num'];
                 $deviceInLib = DB::get_one("SELECT * FROM {$_M[table][userdata_ddwl_device]} WHERE serial_number = '{$serial}'");
+                
+
                 if($deviceInLib){
-                    $name = $_M[form]['device-name'];
-                    $loca = $_M[form]['device-loca'];
-                    $groupId = DB::get_one("SELECT * FROM {$_M[table][userdata_group]} WHERE name = '{$_M[form]['group-name']}'")['id'];
-                    $onetId = $deviceInLib['onet_id'];
-                    $desc = $_M[form]['device-desc'];
-
-                    $query = "INSERT INTO {$_M[table][userdata_device]} SET
-                            group_id = '{$groupId}',
-                            onet_id = '{$onetId}',
-                            name = '{$name}',
-                            location = '{$loca}',
-                            serial_number = '{$serial}',
-                            description = '{$desc}'";
-                    DB::query($query);
-                    //2 device对应的sensor的
-                    
-                    $insertId = DB::insert_id();
-                    // print_r($insertId);
-                    $sensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_ddwl_sensor']} WHERE device_id = '{$deviceInLib['id']}'");
-                    // print_r($sensors[0]['type_id']);
-                    for($i = 0; $i < count($sensors); $i++){
-                        $query = "INSERT INTO {$_M[table]['userdata_sensor']} SET
-                                device_id = '{$insertId}',
-                                type_id = '{$sensors[$i]['type_id']}'";
+                    $onet = DB::get_one("SELECT * FROM {$_M[table][userdata_onet]} WHERE ddwl_device_id = '{$deviceInLib['id']}'");
+                    if($onet['device_id']){
+                        $text="此序列号已被使用！";
+                        $sucToPage = $_M[url][site]."data/request_page.php?n=userdata&c=userdata&a=doadddevice";
+                        require_once $this -> template('own/success');
+                    } else{
+                        $name = $_M[form]['device-name'];
+                        $loca = $_M[form]['device-loca'];
+                        $groupId = DB::get_one("SELECT * FROM {$_M[table][userdata_group]} WHERE name = '{$_M[form]['group-name']}'")['id'];
+                        $desc = $_M[form]['device-desc'];
+    
+                        $query = "INSERT INTO {$_M[table][userdata_device]} SET
+                                group_id = '{$groupId}',
+                                name = '{$name}',
+                                location = '{$loca}',
+                                serial_number = '{$serial}',
+                                description = '{$desc}'";
                         DB::query($query);
+                        $newDeviceId = DB::insert_id();
+    
+                        $query = "UPDATE {$_M[table][userdata_onet]} SET
+                                device_id = '{$newDeviceId}'
+                                WHERE id = '{$onet['id']}'";
+                        DB::query($query);
+                        //2 device对应的sensor的
+                        
+                        // print_r($newDeviceId);
+                        $sensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_ddwl_sensor']} WHERE device_id = '{$deviceInLib['id']}'");
+                        // print_r($sensors[0]['type_id']);
+                        for($i = 0; $i < count($sensors); $i++){
+                            $query = "INSERT INTO {$_M[table]['userdata_sensor']} SET
+                                    device_id = '{$newDeviceId}',
+                                    type_id = '{$sensors[$i]['type_id']}'";
+                            DB::query($query);
+                        }
+                        //3 device对应的onenet配置,由于是用一个onet数据库，当onet_id正确联系后即可使用
+    
+                        //成功跳转
+                        $text="创建成功！";
+                        $sucToPage = $_M[url][site]."data/request_page.php?n=userdata&c=userdata&a=doindex";
+                        require_once $this -> template('own/success');
+    
                     }
-                    //3 device对应的onenet配置,由于是用一个onet数据库，当onet_id正确联系后即可使用
-
-                    //成功跳转
-                    $text="创建成功！";
-                    $sucToPage = $_M[url][site]."data/request_page.php?n=userdata&c=userdata&a=doindex";
-                    require_once $this -> template('own/success');
-
+                   
 
                 } else{
                     $text="序列号错误！";
@@ -227,21 +220,17 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 echo($sceneId);
                 break;
             case 'getHistData':
-                $deviceData = DB::get_one("SELECT * FROM {$_M[table]['userdata_device']} WHERE name = '{$_M['form']['deviceName']}'");
-
-                $onet = DB::get_one("SELECT * FROM {$_M[table]['userdata_onet']} WHERE id = '{$deviceData['onet_id']}'");
+                $onetDeviceId = $_M[form]['deviceOnetId'];
                 $start_time = $_M[form]['startTime'];
                 $end_time = $_M[form]['endTime'];
                 $limit = 100;
                 $dataHists = array();
                 //根据id获取相应的sensor                
-                $sensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE device_id = '{$deviceData['id']}'");
+                $sensors = DB::get_all("SELECT * FROM {$_M[table]['userdata_sensor']} WHERE device_id = '{$_M[form][deviceId]}'");
                 // 根据相应的sensor获取data_flow
                 for($i = 0; $i < count($sensors); $i++){
                     $type = DB::get_one("SELECT * FROM {$_M[table]['userdata_type']} WHERE id = '{$sensors[$i]['type_id']}'");
-                    // arr
-                    // print_r($onet['onet_device_id']."#".$type['data_flow']."#". $start_time."#".$end_time);
-                    $dataHist = $this->sensOper->getHistData($onet['onet_device_id'], $type['data_flow'], $start_time,$end_time, $limit);
+                    $dataHist = $this->sensOper->getHistData($onetDeviceId, $type['data_flow'], $start_time,$end_time, $limit);
                     array_push($dataHists, $dataHist);
                 }
 
