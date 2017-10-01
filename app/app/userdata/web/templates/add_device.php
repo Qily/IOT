@@ -1,7 +1,7 @@
 <!--<?php
 defined('IN_MET') or exit('No permission');//保持入口文件，每个应用模板都要添加
 
-$title = '设备信息';
+
 require_once $this->template('own/header');
 
 
@@ -78,31 +78,11 @@ echo <<<EOT
 </div><!-- main end -->
 <div class="col-md-1"></div>
 
-
 <script type="text/javascript">
+var site = '{$_M['url'][site]}' + 'data/request_page.php?n=userdata&c=userdata&';
 $(document).ready(function(){
 	setGroupOption();
 });
-
-function setGroupOption(){
-	$.ajax({
-		url:'{$urlUserdata}a=dogetinfo&action=getGroup',
-		dataType:'json',
-		type:'POST',
-
-		success:function(data){
-			var html="";
-			for(var i = 0; i < data._count; i++){
-				html += "<option>"+ data._data[i]['name']+"</option>";
-			}
-			$("#group-option").append(html);
-		},
-
-		error:function(){
-			// alert("error");
-		}
-	});
-}
 </script>
 
 <!--

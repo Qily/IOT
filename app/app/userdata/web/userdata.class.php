@@ -15,11 +15,19 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
 
     public function doindex(){//定义自己的方法
         global $_M;//引入全局数组
+        $title = '设备数据';
+        $deviceCount = 0;
+        $groups = DB::get_all("SELECT * FROM {$_M[table]['userdata_group']} WHERE create_man_id = {$this->loginId}");
+        for($i = 0; $i < count($groups); $i++){
+            $deviceCount += count(DB::get_all("SELECT * FROM {$_M[table]['userdata_device']} WHERE group_id = {$groups[$i]['id']}"));
+        }
 
 	    require_once $this ->template('own/index');
     }
 
 	public function docreategroup(){
+        $title = '创建组别';
+
         global $_M;
         $action = $_M[form]['action'];
         switch($action){
@@ -36,11 +44,14 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
             default:
                 break;
         }
+        $groupCount = count(DB::get_all("SELECT * FROM {$_M[table]['userdata_group']} WHERE create_man_id = {$this->loginId}"));
 		require_once $this -> template('own/create_group');
     }
     
     public function doadddevice(){
         global $_M;
+
+        $title = '设备信息';
 
         $action = $_M[form]['action'];
         switch($action){
@@ -115,6 +126,7 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
     
     public function doanalysis(){
         global $_M;        
+        $title = '数据分析';
         require_once $this->template('own/data_analysis');
     }
     
@@ -125,11 +137,14 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
     
     public function dosceneset(){
         global $_M;
+        $title = '场景设置';
+        
         require_once $this->template('own/scene_set');
     }
 
     public function doscenedisplay(){
         global $_M;
+        $title = '场景展示';
         require_once $this->template('own/scene_display');
     }
     
@@ -245,29 +260,24 @@ class userdata extends web {//继承后台基类。类名称要与文件名一�
                 echo($json_data);
                 // echo(100);
                 break;
-            // case 'getDevicesByLoginId':
-            //     $loginId = get_met_cookie('metinfo_member_id');
-            //     //找登录用户对应的组
-            //     $user_groups = DB::get_all("select * from {$_M[table]['userdata_group_user']} where user_id = '{$loginId}'");
-            //     $sensors = array();
-            //     for($i = 0; $i < count($user_groups); $i++){
-            //         //通过组找对应的传感器
-            //         $sensorSingleGroup = DB::get_all("select * from {$_M[table]['userdata_sensor']} where groupId = '{$user_groups[$i]['group_id']}' ORDER BY id ASC");
-            //         if($sensorSingleGroup != null){
-            //         $sensors = array_merge($sensors, $sensorSingleGroup);
-            //         }
-            //     }
-            //     $obj->_count = count($sensors);
-            //     $obj->_data = $sensors;
-            //     $json_data = json_encode($obj);
-            //     echo($json_data);
-            //     break;
             case 'getGroup':
                 $userGroups = DB::get_all("SELECT * FROM {$_M[table]['userdata_group']} WHERE create_man_id = '{$loginId}' ORDER BY id ASC");
                 $obj->_count = count($userGroups);
                 $obj->_data = $userGroups;
                 $json_data = json_encode($obj);
                 echo($json_data);
+                break;
+            case 'getGroupInfo':
+                $out = $this->sqlOper->getGroupInfo($this->loginId, $_M[form]['startItem'], $_M[form]['pageSize']);
+                echo($out);
+                break;
+            case 'getDeviceAndSensor':
+                $out = $this->sqlOper->getDeviceAndSensor($this->loginId, $_M[form]['startItem'], $_M[form]['pageSize']);
+                echo($out);
+                break;
+            case 'getScene':
+                $out = $this->sqlOper->getScene($this->loginId);
+                echo($out);
                 break;
             default:
                 break;

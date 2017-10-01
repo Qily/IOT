@@ -171,3 +171,24 @@ tr td {
     padding-top:50px;
     padding-left:50px;
 }
+
+.page-ul{
+    display:inline;
+    white-space: nowrap;
+}
+.page-li{
+    padding: 10px 20px;
+    display: inline-block;
+    background:#8A2D3E;
+    white-space:nowrap;
+}
+
+#login-user{
+    display:inline;
+    /* white-space: nowrap; */
+}
+
+#login-user div{
+    display: inline-block;
+    /* white-space:nowrap; */
+}

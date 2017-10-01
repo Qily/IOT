@@ -13,8 +13,7 @@ echo <<<EOT
 <script src="{$bootstrap_min_js}"></script>
 <script src="{$easydrag}"></script>
 <script src="{$jquery_datetimepicker_full_min_js}"></script>
-<script src="{$js_share}"></script>
-<script src="{$scripts_js}"></script>
+<script src="{$js_own}"></script>
 <script src="{$js_pin}"></script>
 
 

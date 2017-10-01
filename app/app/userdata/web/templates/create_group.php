@@ -1,15 +1,13 @@
 <!--<?php
 defined('IN_MET') or exit('No permission');//保持入口文件，每个应用模板都要添加
-header("Content-Type:text/html;charset=utf-8"); 
-$title = '设备信息';
+// header("Content-Type:text/html;charset=utf-8"); 
 require_once $this->template('own/header');
-
 echo <<<EOT
 -->
 
 
 		<div class="col-md-4">
-			<table class="table">
+			<table class="table" id='page-table'>
 				<thead>
 					<tr>
 						<th></th>
@@ -28,52 +26,13 @@ echo <<<EOT
 					</tr>
 				</thead>
 				<tbody>
-					
-
-
-<!--
-EOT;
-$userGroups = DB::get_all("SELECT * FROM {$_M[table]['userdata_group']} WHERE create_man_id = '{$loginId}'");
-for($i = 0; $i < count($userGroups); $i++){
-	$group = $userGroups[$i];
-	//根据组名获得create_id从而从user表中获取用户名
-	$username = DB::get_one("SELECT username FROM {$_M[table]['user']} WHERE id = '{$group['create_man_id']}'");
-	
-	//根据组名在userdata_device表中获得device数量
-	$deviceCount = count(DB::get_all("SELECT id FROM {$_M[table]['userdata_device']} where group_id = '{$group['id']}'"));
-
-	$order = $i + 1;
-	array_push($group,$order, $username['username'], $deviceCount);
-echo <<<EOT
--->
-					<tr>
-						<td>
-							{$group[0]}
-						</td>
-						
-						<td>
-							{$group['name']}
-						</td>
-						<td>
-							{$group[1]}
-						</td>
-						<td>
-							{$group[2]}
-						</td>
-						<td>
-
-							<a class="btn btn-danger" href="javascript:if(confirm('确定删除该组并删除组下的所有设备？！！'))location='{$urlUserdata}a=dogroupopera&action=del&id={$group['id']}'">删除</a>
-
-						</td>
-					</tr>
-<!--
-EOT;
-}
-echo <<<EOT
--->
+				
 					
 				</tbody>
+				
 			</table>
+
+			
 		</div>
 		<div class="col-md-1"></div>
 		<div class="col-md-3">
@@ -109,6 +68,17 @@ echo <<<EOT
 		<div class="col-md-1"></div>
 		</div>
 	</div>
+
+<script type="text/javascript">
+var site = '{$_M['url'][site]}' + 'data/request_page.php?n=userdata&c=userdata&';
+var pageSize = 1;
+var allItemCount = {$groupCount};
+
+$(document).ready(function(){
+	initPage("getGroupInfo");
+	getGroupInfo("first");
+});
+</script>
 
 <!--
 EOT;

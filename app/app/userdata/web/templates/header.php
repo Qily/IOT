@@ -21,7 +21,7 @@ $imgSceneDisplay = $_M[url][own]."img/scenedisplay.png";
 $imgAdd = $_M[url][own]."img/add.png";
 $addImg = $_M[url][own]."web/templates/files/addImg.png";
 $imgScene = $_M[url][own]."img/scene.png";
-$imgUser = $_M[url][own]."img/user.png";
+$imgUser = $_M[url][own]."img/user_1.png";
 $imgLogo = $_M[url][own]."img/logo.png";
 $imgBottom = $_M[url][own]."img/bottom.png";
 $imgExtend = $_M[url][own]."img/extend.png";
@@ -38,10 +38,9 @@ $jquery_datetimepicker_css = $_M[url][own]."web/templates/css/jquery.datetimepic
 
 $bootstrap_min_js = $_M[url][own]."web/templates/js/bootstrap.min.js";
 $jquery_min_js = $_M[url][own]."web/templates/js/jquery.min.js";
-$scripts_js = $_M[url][own]."web/templates/js/scripts.js";
 $jquery_datetimepicker_full_min_js = $_M[url][own]."web/templates/js/jquery.datetimepicker.full.min.js";
 $easydrag = $_M[url][own]."web/templates/js/jquery.easyDrag.js";
-$js_share = $_M[url][own]."web/templates/js/share.js";
+$js_own = $_M[url][own]."web/templates/js/own.js";
 $js_pin = $_M[url][own]."web/templates/js/jquery.pin.js";
 
 $urlUserdata = $_M['url'][site]."data/request_page.php?n=userdata&c=userdata&";
@@ -72,67 +71,63 @@ echo <<<EOT
 </head>
 <body>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 	function navEvent(url){
 		location.href = url;
-		// $("#"+id).style.background = "#DDDDDD";
-		// this.style.background = "#DDDDDD";
 	}
 		
 
-		function toPersonalInfo(){
-			location.href = '{$urlUser}';
-		}
-		$(document).ready(function(){
-			$("#username").text('{$username}');
-		});
-	</script>
+	function toPersonalInfo(){
+		location.href = '{$urlUser}';
+	}
+	$(document).ready(function(){
+		$("#username").text('{$username}');
+	});
+</script>
 
-	<div class="container-fluid clearfix">
-		<div class="row">
-		<img id='top-img' alt="Top Image" src="{$imgTop}" style="width:100%">
+<div class="container-fluid clearfix">
+	<div class="row">
+	<img id='top-img' alt="Top Image" src="{$imgTop}" style="width:100%">
 
-		<div class="col-md-offset-10 superlink" id="login-user" style="color:#6B8E23" onclick="toPersonalInfo()">
-			<table>
-				<tr>
-					<td><img class="navbar-brand" src="{$imgUser}"/></td>
-					<td><h4 id="username">&nbsp;&nbsp;</h4></td>
-				</tr>
-			</table>
-		</div>
-		<a class="superlink" href="{$_M[url][site]}"><img class="col-md-offset-1" id="logo" src="{$imgLogo}"/>
-		</img></a>
-		
-		</div>
-		<div class="row">
-			<div class="col-md-1 mainbody"></div>
-			<div class="col-md-2">
-				<ul class="nav">
-					<li class="nav-first-layer">
-						数据监控
-					</li>
-					<li class="nav-second-layer" id="nav1"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doindex')"><img src="{$imgdevice}"/>&nbsp&nbsp设备列表</a></li>
+	<div class="col-md-offset-10 superlink" id="login-user" onclick="toPersonalInfo()">
 
-					<li class="nav-second-layer" id="nav2"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doscenedisplay')"><img src="{$imgSceneDisplay}"/>&nbsp;&nbsp场景展示</a></li>
+		<div><img src="{$imgUser}"/></div>&nbsp;&nbsp;
+		<div><h4 id="username"></h4></div>
 
-					<li class="nav-second-layer" id="nav3"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doexception')"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
-
-					<li class="nav-first-layer">
-						设备管理
-					</li>
-						<li class="nav-second-layer" id="nav4"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=docreategroup')"><img src="{$imgGroup}"/>&nbsp&nbsp创建组别</a></li>
-					
-						<li class="nav-second-layer" id="nav5"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doadddevice')"><img src="{$imgAddSensor}"/>&nbsp;&nbsp创建设备</a></li>
-
-					<li class="nav-first-layer">
-						数据管理
-					</li>
-						<li class="nav-second-layer" id="nav6"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doanalysis')"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
-
-						<!--<li class="nav-second-layer"><a href="{$_M[url][site]}"><img src="{$imghome}"/>&nbsp&nbsp返回首页</a></li>-->
+	</div>
+	<a class="superlink" href="{$_M[url][site]}"><img class="col-md-offset-1" id="logo" src="{$imgLogo}"/>
+	</img></a>
 	
-				</ul>
-			</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1 mainbody"></div>
+		<div class="col-md-2">
+			<ul class="nav">
+				<li class="nav-first-layer">
+					数据监控
+				</li>
+				<li class="nav-second-layer" id="nav1"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doindex')"><img src="{$imgdevice}"/>&nbsp&nbsp设备列表</a></li>
+
+				<li class="nav-second-layer" id="nav2"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doscenedisplay')"><img src="{$imgSceneDisplay}"/>&nbsp;&nbsp场景展示</a></li>
+
+				<li class="nav-second-layer" id="nav3"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doexception')"><img src="{$imgexception}"/>&nbsp;&nbsp异常数据</a></li>
+
+				<li class="nav-first-layer">
+					设备管理
+				</li>
+					<li class="nav-second-layer" id="nav4"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=docreategroup')"><img src="{$imgGroup}"/>&nbsp&nbsp创建组别</a></li>
+				
+					<li class="nav-second-layer" id="nav5"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doadddevice')"><img src="{$imgAddSensor}"/>&nbsp;&nbsp创建设备</a></li>
+
+				<li class="nav-first-layer">
+					数据管理
+				</li>
+					<li class="nav-second-layer" id="nav6"><a href='javascript:void(0);' onclick="navEvent('{$urlUserdata}a=doanalysis')"><img src="{$imgdataanalysis}"/>&nbsp;&nbsp数据分析</a></li>
+
+					<!--<li class="nav-second-layer"><a href="{$_M[url][site]}"><img src="{$imghome}"/>&nbsp&nbsp返回首页</a></li>-->
+
+			</ul>
+		</div>
 <!--
 EOT;
 ?>
